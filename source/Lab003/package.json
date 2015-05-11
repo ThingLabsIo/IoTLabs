@@ -1,0 +1,19 @@
+{
+  "name": "IoT-Labs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThingLabsIo/IoTLabs"
+  },
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "johnny-five": "^0.8.0"
+  },
+  "keywords": [
+    "devices",
+    "iot",
+    "arduino yun",
+    "arduino",
+    "yun"
+  ]
+}

@@ -37,29 +37,31 @@ lightSensor = new nitrogen.Device({
     tags: ['sends:_lightState', 'executes:_lightLevel']
 });
 
-board.on("ready", function() {
-    console.log("Board connected...");
-    // Create a new `photoresistor` hardware instance.
-    photoresistor = new five.Sensor({
-        pin: 'A0',  // Analog pin 0
-        freq: 1000  // Collect data once per second
+// Connect the lightSensor device defined above
+// to the Nitrogen service instance.
+service.connect(lightSensor, function(err, session, lightSensor) {
+    if (err) { return console.log('Failed to connect lightSensor: ' + err); }
+    // Create a new CommandManager object for the light (on/off)
+    new LightManager(lightSensor).start(session, function(err, message) { 
+        if (err) return session.log.error(JSON.stringify(err)); 
     });
-    // Define the LED object using the pin
-   led = new five.Led(LEDPIN);
-    // Inject the `sensor` hardware into the Repl instance's context;
-    // Allows direct command line access
-    board.repl.inject({
-        pot: photoresistor,
-        led:led
-    });
-    // Connect the lightSensor device defined above
-    // to the Nitrogen service instance.
-    service.connect(lightSensor, function(err, session, lightSensor) {
-        if (err) { return console.log('Failed to connect lightSensor: ' + err); }
-        // Create a new CommandManager object for the light (on/off)
-        new LightManager(lightSensor).start(session, function(err, message) { 
-            if (err) return session.log.error(JSON.stringify(err)); 
+
+    board.on("ready", function() {
+        console.log("Board connected...");
+        // Create a new `photoresistor` hardware instance.
+        photoresistor = new five.Sensor({
+            pin: 'A0',  // Analog pin 0
+            freq: 1000  // Collect data once per second
         });
+        // Define the LED object using the pin
+        led = new five.Led(LEDPIN);
+        // Inject the `sensor` hardware into the Repl instance's context;
+        // Allows direct command line access
+        board.repl.inject({
+            pot: photoresistor,
+            led:led
+        });
+
         // Define the event handler for the photo resistor reading
         // The freq value used when the photoresistor was defined
         // determines how often this is invoked, thus controlling

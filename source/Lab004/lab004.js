@@ -17,7 +17,7 @@ var config = {
     host: process.env.HOST_NAME || 'api.nitrogen.io',
     http_port: process.env.PORT || 443,
     protocol: process.env.PROTOCOL || 'https',
-    api_key: process.env.API_KEY || '151d6be7ba170d76afcee5e953fe23bd'
+    api_key: process.env.API_KEY || 'YOUR API KEY HERE'
 };
 
 board = new five.Board();

@@ -30,22 +30,25 @@ lightSensor = new nitrogen.Device({
     name: 'Light Sensor'
 });
 
-board.on("ready", function() {
-    console.log("Board connected...");
-    // Create a new `photoresistor` hardware instance.
-    photoresistor = new five.Sensor({
-        pin: 'A0',  // Analog pin 0
-        freq: 1000  // Collect data once per second
-    });
-    // Inject the `sensor` hardware into the Repl instance's context;
-    // Allows direct command line access
-    board.repl.inject({
-        pot: photoresistor
-    });
-    // Connect the lightSensor device defined above
-    // to the Nitrogen service instance.
-    service.connect(lightSensor, function(err, session, lightSensor) {
-        if (err) { return console.log('Failed to connect lightSensor: ' + err); }
+// Connect the lightSensor device defined above
+// to the Nitrogen service instance.
+service.connect(lightSensor, function(err, session, lightSensor) {
+    if (err) { return console.log('Failed to connect lightSensor: ' + err); }
+
+    board.on("ready", function() {
+        console.log("Board connected...");
+        
+        // Create a new `photoresistor` hardware instance.
+        photoresistor = new five.Sensor({
+            pin: 'A0',  // Analog pin 0
+            freq: 1000  // Collect data once per second
+        });
+        // Inject the `sensor` hardware into the Repl instance's context;
+        // Allows direct command line access
+        board.repl.inject({
+            pot: photoresistor
+        });
+
 
         // Define the callback function for the photoresistor reading
         // The freq value used when the photoresistor was defined

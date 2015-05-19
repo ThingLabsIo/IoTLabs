@@ -153,10 +153,10 @@ LightManager.prototype.executeQueue = function(callback) {
     lightMessage.send(this.session, function(err, message) {
         if (err) return callback(err);
         
-        console.log("Message sent: " + JSON.stringify(message));
+        console.log("Message sent: " + JSON.stringify(lightMessage));
         
         // let the command manager know we processed this message.
-        self.process(new nitrogen.Message(message));
+        self.process(new nitrogen.Message(lightMessage));
 
         // need to callback if there aren't any issues so commandManager can proceed.   
         return callback();

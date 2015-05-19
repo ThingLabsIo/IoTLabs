@@ -60,8 +60,7 @@ service.connect(lightSensor, function(err, session, lightSensor) {
                     command: {
                         ambientLight: lightLevel
                     }
-                },
-                to: 'YOUR LIGHT DEVICE ID HERE'
+                }
             });
             
             // Send the message

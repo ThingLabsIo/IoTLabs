@@ -13,6 +13,7 @@ var config = {
 };
 
 var LEDPIN = 13;
+var cmdTag = 'lab06';
 
 board = new five.Board({ port: "COM5" });
 config.store = new Store(config);
@@ -139,7 +140,7 @@ LightManager.prototype.executeQueue = function(callback) {
     // Notice the response_to is the array of command ids from above. This is used in the obsoletes method above as well.
     var lightMessage = new nitrogen.Message({
         type: '_lightState',
-        tags: nitrogen.CommandManager.commandTag('lab06'),
+        tags: nitrogen.CommandManager.commandTag(cmdTag),
         body: {
             command: {
                 on: lightOn
@@ -169,7 +170,7 @@ LightManager.prototype.executeQueue = function(callback) {
 LightManager.prototype.start = function(session, callback) {
 
     var filter = {
-        tags: nitrogen.CommandManager.commandTag('lab06')
+        tags: nitrogen.CommandManager.commandTag(cmdTag)
     };
     
     return nitrogen.CommandManager.prototype.start.call(this, session, filter, callback);

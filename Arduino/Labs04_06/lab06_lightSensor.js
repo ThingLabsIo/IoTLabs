@@ -60,7 +60,7 @@ service.connect(lightSensor, function(err, session, lightSensor) {
                     command: {
                         ambientLight: lightLevel
                     }
-                }
+                }//, to: '555a9d8e72790b0100f79420'
             });
             
             // Send the message

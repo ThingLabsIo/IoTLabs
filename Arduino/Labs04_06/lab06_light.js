@@ -35,9 +35,10 @@ service.connect(indicatorLight, function(err, session, indicatorLight) {
     new LightManager(indicatorLight).start(session, function(err, message) { 
         if (err) return session.log.error(JSON.stringify(err)); 
     });
-    
+        
     board.on("ready", function() {
         console.log("Board connected...");
+           
     
         // Define the LED object using the pin
         led = new five.Led(LEDPIN);

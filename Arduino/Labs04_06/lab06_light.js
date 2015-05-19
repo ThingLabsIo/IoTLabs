@@ -65,9 +65,10 @@ LightManager.prototype.constructor = LightManager;
 // Return true if this message is relevant to the CommandManager
 // _lightState and _lightLevel are the messages the LightManager cares about
 LightManager.prototype.isRelevant = function(message) {
-    console.log("isrelevant");
     var relevant = (message.is('_lightState') || message.is('_lightLevel'));
-
+    
+    console.log(message.id + " isrelevant: " + relevant);
+    
     return relevant;
 };
 
@@ -75,7 +76,9 @@ LightManager.prototype.isRelevant = function(message) {
 // Return true if this message is a command that this
 // CommandManager should process. 
 LightManager.prototype.isCommand = function(message) {
-    return message.is('_lightLevel');
+    var cmd = message.is('_lightLevel')
+    console.log("\t" + message.id + " isCommand: " + cmd);
+    return cmd;
 };
 
 // Override: CommandManager.obsoletes(downstreamMsg, upstreamMsg)
@@ -89,6 +92,7 @@ LightManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
                 downstreamMsg.isResponseTo(upstreamMsg) &&
                 upstreamMsg.is('_lightLevel');
 
+    console.log("\t\t" + upstreamMsg.id + " obsoletes: " + value);
     return value;
 };
 

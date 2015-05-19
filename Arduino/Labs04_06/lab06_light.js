@@ -1,5 +1,5 @@
 var five = require ("johnny-five"),
-    board,led;
+    board, led;
     
 var Store = require("nitrogen-file-store"),
     nitrogen = require("nitrogen"),
@@ -24,7 +24,7 @@ service = new nitrogen.Service(config);
 indicatorLight = new nitrogen.Device({
     nickname: 'lab06_indicatorLight',
     name: 'Lab 06 Indicator Light',
-    tags: ['sends:_lightState', 'executes:_lightLevel']
+    tags: ['sends:_color', 'executes:_lightLevel']
 });
 
 // Connect the indicatorLight device defined above
@@ -40,9 +40,14 @@ service.connect(indicatorLight, function(err, session, indicatorLight) {
     board.on("ready", function() {
         console.log("Board connected...");
            
-    
-        // Define the LED object using the pin
-        led = new five.Led(LEDPIN);
+        // Initialize the RGB LED
+        led = new five.Led.RGB({
+            pins: {
+                red: 6,
+                green: 5,
+                blue: 3
+            }
+        });
    
         // Inject the `sensor` hardware into the Repl instance's context;
         // Allows direct command line access
@@ -65,9 +70,9 @@ LightManager.prototype.constructor = LightManager;
 // Return true if this message is relevant to the CommandManager
 // _lightState and _lightLevel are the messages the LightManager cares about
 LightManager.prototype.isRelevant = function(message) {
-    var relevant = (message.is('_lightState') || message.is('_lightLevel'));
+    var relevant = (message.is('_color') || message.is('_lightLevel'));
     
-    console.log(message.id + " isrelevant: " + relevant);
+    //console.log(message.id + " isrelevant: " + relevant);
     
     return relevant;
 };
@@ -77,7 +82,7 @@ LightManager.prototype.isRelevant = function(message) {
 // CommandManager should process. 
 LightManager.prototype.isCommand = function(message) {
     var cmd = message.is('_lightLevel')
-    console.log("\t" + message.id + " isCommand: " + cmd);
+    //console.log("\t" + message.id + " isCommand: " + cmd);
     return cmd;
 };
 
@@ -88,11 +93,11 @@ LightManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
     if (nitrogen.CommandManager.obsoletes(downstreamMsg, upstreamMsg))
         return true;
 
-    var value = downstreamMsg.is('_lightState') &&
+    var value = downstreamMsg.is('_color') &&
                 downstreamMsg.isResponseTo(upstreamMsg) &&
                 upstreamMsg.is('_lightLevel');
 
-    console.log("\t\t" + upstreamMsg.id + " obsoletes: " + value);
+    //console.log("\t\t" + upstreamMsg.id + " obsoletes: " + value);
     return value;
 };
 
@@ -114,7 +119,7 @@ LightManager.prototype.executeQueue = function(callback) {
     }
     
     var commandIds = [];
-    var lightOn;
+    var r, g, b;
 
     // Find the final state and collect all the active command ids
     // You will use them in a moment.
@@ -123,31 +128,36 @@ LightManager.prototype.executeQueue = function(callback) {
         commandIds.push(activeCommand.id);
         
         var light = activeCommand.body.command.ambientLight;
+
+        r = map(light, 0, 612, 0, 255);
+        g = map(light, 300, 900, 0, 255);
+        b = map(light, 612, 1023, 0, 255);        
         
-        // Determine the final state of the light (on/true or off/false)
-        lightOn = light > 350;
+        r = constrain(r, 0, 255).toString(16);
+        g = constrain(g, 0, 255).toString(16);
+        b = constrain(b, 0, 255).toString(16);
+        
+         // Add a leading '0' as needed.
+        if(r.length < 2) r = '0' + r;
+        if(g.length < 2) g = '0' + g;
+        if(b.length < 2) b = '0' + b;
+        
+        //console.log(r, g, b);
+        //console.log(r + g + b);
     });
     
-    // Turn the light on or off based on final state
-    if (led != null) { // Make sure the led sensor is available before using it
-        if(lightOn) { 
-           led.on();
-        } else { 
-           led.off();
-        }
-    }
-    else {
-        console.log("ERROR: 'led' was null.");
+    if(led != null) {
+        led.color(r + g + b);
     }
     
     // This is the response to the _lightLevel command.
     // Notice the response_to is the array of command ids from above. This is used in the obsoletes method above as well.
     var lightMessage = new nitrogen.Message({
-        type: '_lightState',
+        type: '_color',
         tags: nitrogen.CommandManager.commandTag(cmdTag),
         body: {
             command: {
-                on: lightOn
+                color: r + g + b
             }
         },
         response_to: commandIds
@@ -179,3 +189,15 @@ LightManager.prototype.start = function(session, callback) {
     
     return nitrogen.CommandManager.prototype.start.call(this, session, filter, callback);
 };
+
+// This function maps a value from one range into another range
+// Example: map (25, 0, 25, 0, 50) returns 50
+// Example: map (20, 0, 100, 0, 10) returns 2
+function map(x, in_min, in_max, out_min, out_max) {
+  return Math.round((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+}
+
+// This function ensures a value is within a defined range
+function constrain(x, in_min, in_max) {
+  return Math.round(x < in_min ? in_min : x > in_max ? in_max : x);
+}

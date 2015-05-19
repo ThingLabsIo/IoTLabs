@@ -40,7 +40,7 @@ board.on("ready", function() {
         if(r.length < 2) r = '0' + r;
         if(g.length < 2) g = '0' + g;
         if(b.length < 2) b = '0' + b;
-    
+        
         console.log(r, g, b);
     
         led.color(r + g + b);

@@ -1,12 +1,3 @@
-/*
-  Lab005.js
-  In this lab you will use a photoresistor to create an ambient light
-  sensor. You will send data collected from the ambient light sensor
-  to Nitrogen and process it to determine is the LED should be on or off.
-  You will then send a message indicting the state of the LED after the
-  command is processed. In this lab you are simulating two devices - an
-  ambient light sensor and a light -- with a single Arduino.
-*/
 var five = require ("johnny-five"),
     board, photoresistor,led;
     
@@ -18,7 +9,8 @@ var config = {
     host: process.env.HOST_NAME || 'api.nitrogen.io',
     http_port: process.env.PORT || 443,
     protocol: process.env.PROTOCOL || 'https',
-    api_key: process.env.API_KEY || 'YOUR API KEY HERE'
+    api_key: process.env.API_KEY || 'YOUR API KEY HERE',
+    log_levels: ['debug', 'info', 'warn', 'error']
 };
 
 var LEDPIN = 13;
@@ -151,6 +143,8 @@ LightManager.prototype.executeQueue = function(callback) {
     
     var commandIds = [];
     var lightOn;
+    
+    console.log('activeCommands:'); console.dir(activeCommands);
 
     // Find the final state and collect all the active command ids
     // You will use them in a moment.
@@ -192,10 +186,10 @@ LightManager.prototype.executeQueue = function(callback) {
     lightMessage.send(this.session, function(err, message) {
         if (err) return callback(err);
         
-        console.log("Message sent: " + JSON.stringify(lightMessage));
+        console.log("Message sent: " + JSON.stringify(message));
         
-        // let the command manager know we processed this _lightState message.
-        self.process(new nitrogen.Message(lightMessage));
+        // let the command manager know we processed this message.
+        self.process(new nitrogen.Message(message));
 
         // need to callback if there aren't any issues so commandManager can proceed.   
         return callback();

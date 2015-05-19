@@ -9,13 +9,12 @@ var config = {
     host: process.env.HOST_NAME || 'api.nitrogen.io',
     http_port: process.env.PORT || 443,
     protocol: process.env.PROTOCOL || 'https',
-    api_key: process.env.API_KEY || 'YOUR API KEY HERE',
-    log_levels: ['debug', 'info', 'warn', 'error']
+    api_key: process.env.API_KEY || 'YOUR API KEY HERE'
 };
 
 var LEDPIN = 13;
 
-board = new five.Board();
+board = new five.Board({ port: "COM5" });
 config.store = new Store(config);
 service = new nitrogen.Service(config);
 
@@ -64,8 +63,8 @@ LightManager.prototype.constructor = LightManager;
 // Return true if this message is relevant to the CommandManager
 // _lightState and _lightLevel are the messages the LightManager cares about
 LightManager.prototype.isRelevant = function(message) {
-    var relevant = ( (message.is('_lightState') || message.is('_lightLevel')) &&
-                     (!this.device || message.from === this.device.id || message.to == this.device.id) );
+    console.log("isrelevant");
+    var relevant = (message.is('_lightState') || message.is('_lightLevel'));
 
     return relevant;
 };
@@ -110,8 +109,6 @@ LightManager.prototype.executeQueue = function(callback) {
     
     var commandIds = [];
     var lightOn;
-    
-    console.log('activeCommands:'); console.dir(activeCommands);
 
     // Find the final state and collect all the active command ids
     // You will use them in a moment.

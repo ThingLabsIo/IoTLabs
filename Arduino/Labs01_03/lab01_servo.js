@@ -1,4 +1,4 @@
-/* Lab05_servo
+/* Lab 01 Servo Output
  * In this lab you will create a servo device that moves to a random
  * position every two-seconds to demonstrate servo control.
  * 

@@ -1,9 +1,9 @@
 var five = require ("johnny-five"),
-    board, photoresistor,led;
+    board,led;
     
 var Store = require("nitrogen-file-store"),
     nitrogen = require("nitrogen"),
-    service, lightSensor;
+    service, indicatorLight;
 
 var config = {
     host: process.env.HOST_NAME || 'api.nitrogen.io',
@@ -21,30 +21,24 @@ service = new nitrogen.Service(config);
 
 // Create a new Nitrogen device for the photoresistor
 // This device will send data it reads from a sensor
-lightSensor = new nitrogen.Device({
-    nickname: 'lab05_lightSensor',
-    name: 'Lab 05 Light Sensor',
+indicatorLight = new nitrogen.Device({
+    nickname: 'lab06_indicatorLight',
+    name: 'Lab 06 Indicator Light',
     tags: ['sends:_lightState', 'executes:_lightLevel']
 });
 
-// Connect the lightSensor device defined above
+// Connect the indicatorLight device defined above
 // to the Nitrogen service instance.
-service.connect(lightSensor, function(err, session, lightSensor) {
-    if (err) { return console.log('Failed to connect lightSensor: ' + err); }
+service.connect(indicatorLight, function(err, session, indicatorLight) {
+    if (err) { return console.log('Failed to connect lab06_indicatorLight: ' + err); }
     
-    // Create an instance of the subclassed CommandManager object for the lightSensor
-    new LightManager(lightSensor).start(session, function(err, message) { 
+    // Create an instance of the subclassed CommandManager object for the indicatorLight
+    new LightManager(indicatorLight).start(session, function(err, message) { 
         if (err) return session.log.error(JSON.stringify(err)); 
     });
     
     board.on("ready", function() {
         console.log("Board connected...");
-    
-        // Create a new `photoresistor` hardware instance.
-        photoresistor = new five.Sensor({
-            pin: 'A0',  // Analog pin 0
-            freq: 1000  // Collect data once per second
-        });
     
         // Define the LED object using the pin
         led = new five.Led(LEDPIN);
@@ -52,34 +46,7 @@ service.connect(lightSensor, function(err, session, lightSensor) {
         // Inject the `sensor` hardware into the Repl instance's context;
         // Allows direct command line access
         board.repl.inject({
-            pot: photoresistor,
             led:led
-        });
-        
-        // Define the event handler for the photo resistor reading
-        // The freq value used when the photoresistor was defined
-        // determines how often this is invoked, thus controlling
-        // the frequency of Nitrogen messages.
-        photoresistor.on('data', function() {
-            // Capture the ambient light level from the photo resistor
-            var lightLevel = this.value;
-            
-            // Create a Nitrogen Message to send the _lightLevel
-            var ambientLightMessage = new nitrogen.Message({
-                type: '_lightLevel',
-                tags: nitrogen.CommandManager.commandTag(lightSensor.id),
-                body: {
-                    command: {
-                        ambientLight: lightLevel
-                    }
-                },
-                to: lightSensor.id
-            });
-            
-            // Send the message
-            ambientLightMessage.send(session);
-            
-            console.log("Message sent: " + JSON.stringify(ambientLightMessage));
         });
     });
 });
@@ -174,7 +141,7 @@ LightManager.prototype.executeQueue = function(callback) {
     // Notice the response_to is the array of command ids from above. This is used in the obsoletes method above as well.
     var lightMessage = new nitrogen.Message({
         type: '_lightState',
-        tags: nitrogen.CommandManager.commandTag(self.device.id),
+        tags: nitrogen.CommandManager.commandTag('lab06'),
         body: {
             command: {
                 on: lightOn
@@ -204,8 +171,8 @@ LightManager.prototype.executeQueue = function(callback) {
 LightManager.prototype.start = function(session, callback) {
 
     var filter = {
-        tags: nitrogen.CommandManager.commandTag(this.device.id)
+        tags: nitrogen.CommandManager.commandTag('lab06')
     };
-
+    
     return nitrogen.CommandManager.prototype.start.call(this, session, filter, callback);
 };

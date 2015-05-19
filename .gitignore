@@ -27,4 +27,5 @@ build/Release
 node_modules
 
 # Nitrogen files
-api.nitrogen.iio_443
+api.nitrogen.io_443
+*.io_443

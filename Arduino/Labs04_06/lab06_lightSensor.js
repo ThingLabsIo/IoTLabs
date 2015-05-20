@@ -1,4 +1,11 @@
-var five = require ("johnny-five"),
+/* Lab06_lightSensor
+ * In this lab you will create an ambient light sensor that sends
+ * telemetry to the service once per second. This device is a read-only 
+ * device and doesn't accept any command. 
+ *
+ * Wire up an ambient light sensor like the one in Lab 04.
+ */
+ var five = require ("johnny-five"),
     board, photoresistor;
     
 var Store = require("nitrogen-file-store"),
@@ -55,17 +62,19 @@ service.connect(lightSensor, function(err, session, lightSensor) {
             // Create a Nitrogen Message to send the _lightLevel
             var ambientLightMessage = new nitrogen.Message({
                 type: '_lightLevel',
+                // Specify a command tag that you can scope to
+                // This will enable you to filter out non-relevant messages
                 tags: nitrogen.CommandManager.commandTag('lab06'),
                 body: {
                     command: {
                         ambientLight: lightLevel
                     }
-                }//, to: '555a9d8e72790b0100f79420'
+                }
             });
             
             // Send the message
             ambientLightMessage.send(session);
-            
+            // Show the message in the console
             console.log("Message sent: " + JSON.stringify(ambientLightMessage));
         });
     });

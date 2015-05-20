@@ -19,7 +19,7 @@ var config = {
     api_key: process.env.API_KEY || 'YOUR API KEY HERE'
 };
 
-board = new five.Board();
+board = new five.Board({ port: "COM5" });
 config.store = new Store(config);
 service = new nitrogen.Service(config);
 

@@ -14,7 +14,7 @@ var config = {
 
 var LEDPIN = 13;
 
-board = new five.Board();
+board = new five.Board({ port: "COM5" });
 config.store = new Store(config);
 service = new nitrogen.Service(config);
 

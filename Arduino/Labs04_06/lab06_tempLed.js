@@ -12,7 +12,7 @@
  *
  * You must use the Nitrogen CLI to set permissions for the Indicator device
  * to subscribe to the Temperature device
- * n2 permission add --action subscribe --issueTo TEMP DEVICE --permissionFor INDICATOR DEVICE --authorized true
+ * n2 permission add --action subscribe --authorized true --issueTo INDICATOR DEVICE --principalFor TEMP DEVICE
  */
 var five = require ("johnny-five"),
     board, led;

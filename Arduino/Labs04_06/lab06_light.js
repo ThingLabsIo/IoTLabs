@@ -28,7 +28,7 @@ var config = {
 // This will enable you to filter to only relevant messages
 var cmdTag = 'lab06';
 
-board = new five.Board();
+board = new five.Board({ port: "COM3" });
 config.store = new Store(config);
 service = new nitrogen.Service(config);
 

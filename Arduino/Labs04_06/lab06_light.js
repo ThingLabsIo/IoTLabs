@@ -24,7 +24,7 @@ var config = {
     api_key: process.env.API_KEY || 'YOUR API KEY HERE'
 };
 
-// Specify a command tag that you can scope to.
+// Define a command tag that you can scope to.
 // This will enable you to filter to only relevant messages
 var cmdTag = 'lab06';
 

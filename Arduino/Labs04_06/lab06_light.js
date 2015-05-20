@@ -29,7 +29,7 @@ var LEDPIN = 13;
 // This will enable you to filter to only relevant messages
 var cmdTag = 'lab06';
 
-board = new five.Board({ port: "COM5" });
+board = new five.Board();
 config.store = new Store(config);
 service = new nitrogen.Service(config);
 

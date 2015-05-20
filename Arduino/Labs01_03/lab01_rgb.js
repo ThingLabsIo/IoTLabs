@@ -7,7 +7,7 @@
  * digital pin 2, and the shortest one connected to digital pin 6.
  */
  var five = require("johnny-five");
-var board = new five.Board({ port: "COM5" });
+var board = new five.Board();
 var r, g, b;
 
 board.on("ready", function() {

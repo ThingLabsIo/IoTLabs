@@ -131,7 +131,7 @@ TempStatusManager.prototype.executeQueue = function(callback) {
         // Collect active command IDs
         commandIds.push(activeCommand.id);
         // Collect the ambient light level from the message
-        var temp = activeCommand.body.command.temperature;
+        var temp = activeCommand.body.temperature;
         
         if (temp < 30) 
             color = '0000FF';

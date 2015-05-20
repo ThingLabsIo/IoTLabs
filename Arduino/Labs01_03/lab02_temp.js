@@ -37,7 +37,7 @@ board.on("ready", function() {
       
       // Map the temperature value (a °F range of 75-100 is pretty good)
       // to the range for LED brightness
-      brightness = map(f, 85, 100, 0, 255);
+      brightness = map(f, 75, 100, 0, 255);
       brightness = constrain(brightness, 0, 255);
      
       // Set the LED brightness using PWM.

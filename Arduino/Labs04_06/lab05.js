@@ -9,8 +9,7 @@ var config = {
     host: process.env.HOST_NAME || 'api.nitrogen.io',
     http_port: process.env.PORT || 443,
     protocol: process.env.PROTOCOL || 'https',
-    api_key: process.env.API_KEY || 'YOUR API KEY HERE',
-    log_levels: ['debug', 'info', 'warn', 'error']
+    api_key: process.env.API_KEY || 'YOUR API KEY HERE'
 };
 
 var LEDPIN = 13;
@@ -143,8 +142,6 @@ LightManager.prototype.executeQueue = function(callback) {
     
     var commandIds = [];
     var lightOn;
-    
-    console.log('activeCommands:'); console.dir(activeCommands);
 
     // Find the final state and collect all the active command ids
     // You will use them in a moment.

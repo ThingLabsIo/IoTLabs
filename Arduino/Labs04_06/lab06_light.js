@@ -1,3 +1,15 @@
+/* Lab06_light
+ * In this lab you will create an indicator light that subscribes to the 
+ * message stream of an ambient light sensor (lab06_lightSensor.js). When 
+ * a message is detected from the ambient light sensor the indicator light
+ * device will receive it (as a subscriber) and process it, changing state
+ * as necessary. The indicator light is an RGB LED that will alter its color 
+ * based on the amount of ambient light.
+ *
+ * For this lab, wire up an RGB LED longest pin connected to GND,
+ * the next longest connected to digital pin 5, the next one connected to 
+ * digital pin 2, and the shortest one connected to digital pin 6.
+ */
 var five = require ("johnny-five"),
     board, led;
     
@@ -13,6 +25,8 @@ var config = {
 };
 
 var LEDPIN = 13;
+// Specify a command tag that you can scope to.
+// This will enable you to filter to only relevant messages
 var cmdTag = 'lab06';
 
 board = new five.Board({ port: "COM5" });
@@ -68,22 +82,16 @@ LightManager.prototype.constructor = LightManager;
 
 // Override: CommandManager.isRelevant(message)
 // Return true if this message is relevant to the CommandManager
-// _lightState and _lightLevel are the messages the LightManager cares about
+// _color and _lightLevel are the messages the LightManager cares about
 LightManager.prototype.isRelevant = function(message) {
-    var relevant = (message.is('_color') || message.is('_lightLevel'));
-    
-    //console.log(message.id + " isrelevant: " + relevant);
-    
-    return relevant;
+    return (message.is('_color') || message.is('_lightLevel'));
 };
 
 // Override: CommandManager.isCommand(message)
 // Return true if this message is a command that this
 // CommandManager should process. 
 LightManager.prototype.isCommand = function(message) {
-    var cmd = message.is('_lightLevel')
-    //console.log("\t" + message.id + " isCommand: " + cmd);
-    return cmd;
+    return message.is('_lightLevel')
 };
 
 // Override: CommandManager.obsoletes(downstreamMsg, upstreamMsg)
@@ -97,7 +105,6 @@ LightManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
                 downstreamMsg.isResponseTo(upstreamMsg) &&
                 upstreamMsg.is('_lightLevel');
 
-    //console.log("\t\t" + upstreamMsg.id + " obsoletes: " + value);
     return value;
 };
 
@@ -118,36 +125,42 @@ LightManager.prototype.executeQueue = function(callback) {
         return callback();
     }
     
-    var commandIds = [];
-    var r, g, b;
+    var commandIds = []; // An array to collect Command IDs
+    var r, g, b, color; // Variables for the Red, Green and Blue values
 
     // Find the final state and collect all the active command ids
     // You will use them in a moment.
     activeCommands.forEach(function(activeCommand) {
         // Collect active command IDs
         commandIds.push(activeCommand.id);
-        
+        // Collect the ambient light level from the message
         var light = activeCommand.body.command.ambientLight;
 
-        r = map(light, 0, 612, 0, 255);
-        g = map(light, 300, 900, 0, 255);
-        b = map(light, 612, 1023, 0, 255);        
+        // Set the Red, Green, and Blue values based on the ambient light level.
+        // In bright light it will glow green, and in dim light it will glow white.
+        // Increase the Red value for levels above 350
+        r = map(light, 350, 1023, 0, 255);
+        // increase the Green value for all light levels
+        g = map(light, 0, 1023, 0, 255);
+        // Increase the Blue value for light levels above 650
+        b = map(light, 650, 1023, 0, 255);
         
-        r = constrain(r, 0, 255).toString(16);
+        // Constrain the values to eliminate negative values and values beyond the upper bound
+        r = constrain(r, 0, 255).toString(16); //.toString(16) converts the value to Hexidecimal
         g = constrain(g, 0, 255).toString(16);
         b = constrain(b, 0, 255).toString(16);
         
-         // Add a leading '0' as needed.
+        // Add a leading '0' as needed to have a two-digit hex value
         if(r.length < 2) r = '0' + r;
         if(g.length < 2) g = '0' + g;
         if(b.length < 2) b = '0' + b;
-        
-        //console.log(r, g, b);
-        //console.log(r + g + b);
     });
     
+    color = r + g + b;
+    
+    // If the LED is present, set its color value
     if(led != null) {
-        led.color(r + g + b);
+        led.color(color);
     }
     
     // This is the response to the _lightLevel command.
@@ -157,7 +170,7 @@ LightManager.prototype.executeQueue = function(callback) {
         tags: nitrogen.CommandManager.commandTag(cmdTag),
         body: {
             command: {
-                color: r + g + b
+                color: color
             }
         },
         response_to: commandIds
@@ -166,10 +179,10 @@ LightManager.prototype.executeQueue = function(callback) {
     lightMessage.send(this.session, function(err, message) {
         if (err) return callback(err);
         
-        console.log("Message sent: " + JSON.stringify(lightMessage));
+        console.log("Message sent: " + JSON.stringify(message));
         
         // let the command manager know we processed this message.
-        self.process(new nitrogen.Message(lightMessage));
+        self.process(new nitrogen.Message(message));
 
         // need to callback if there aren't any issues so commandManager can proceed.   
         return callback();

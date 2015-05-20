@@ -10,7 +10,8 @@
     "johnny-five": "^0.8.0",
     "nitrogen": "^0.2.0",
     "nitrogen-cli": "^0.2.0",
-    "nitrogen-file-store": "^0.2.0"
+    "nitrogen-file-store": "^0.2.0",
+    "nitrogen-sensor": "^0.2.0"
   },
   "keywords": [
     "devices",

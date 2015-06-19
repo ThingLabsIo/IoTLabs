@@ -32,7 +32,7 @@ var config = {
 // This will enable you to filter to only relevant messages
 var cmdTag = 'demo_temp';
 
-board = new five.Board({ port: "COM3" });
+board = new five.Board();
 config.store = new Store(config);
 service = new nitrogen.Service(config);
 

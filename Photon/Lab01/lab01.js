@@ -19,6 +19,7 @@ var board = new five.Board({
     deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
   })
 });
+
 // Define the pin that is connected to the LED
 var LEDPIN = "D7";
 // THe board.on() executes the anonymous function when the 

@@ -19,6 +19,7 @@ var board = new five.Board({
     deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
   })
 });
+
 // Define the pin you will use to read the residual voltage 
 // coming from the photoresistor
 var ANALOGPIN = "A0";

@@ -23,13 +23,13 @@ var board = new five.Board({
 // Define the pin you will use to read the residual voltage 
 // coming from the photoresistor
 var ANALOGPIN = "A0";
-// THe board.on() executes the anonymous function when the 
+// The board.on() executes the anonymous function when the 
 // Partile Photon reports back that it is initialized and ready.
 board.on("ready", function(){
   // Read the residual voltage coming from the photoresistor
-  this.analogRead(ANALOGPIN, function(voltage) {
+  this.analogRead(ANALOGPIN, function(val) {
     // Multiple the value by 3.3V / 1024, which the the
     // value range of the photoresistor
-    console.log(voltage * (3.3 / 1024.0));
+    console.log(val * (3.3 / 1024.0));
   });
 });

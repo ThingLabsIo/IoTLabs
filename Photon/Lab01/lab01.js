@@ -11,15 +11,14 @@ documentation.
 
 // Define the Jonny Five and Spark-IO variables
 var five = require("johnny-five");
-var Spark = require("spark-io");
+var spark = require("spark-io");
 // Define the Johnny Five board as your Particle Photon
 var board = new five.Board({
-  io: new Spark({
+  io: new spark({
     token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
     deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
   })
 });
-
 // Define the pin that is connected to the LED
 var LEDPIN = "D7";
 // THe board.on() executes the anonymous function when the 

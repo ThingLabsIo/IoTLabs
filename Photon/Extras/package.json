@@ -1,0 +1,21 @@
+{
+  "name": "IoT-Labs-Photon",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThingLabsIo/IoTLabs/Photon"
+  },
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "johnny-five": "^0.8.0",
+    "spark-io": "^0.6.1"
+  },
+  "keywords": [
+    "devices",
+    "iot",
+    "particle photon",
+    "particle",
+    "photon",
+	"spark"
+  ]
+}

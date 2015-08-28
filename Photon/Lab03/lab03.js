@@ -25,7 +25,7 @@ var LEDPIN = "D0";
 // Define the pin you will use to read the residual voltage 
 // coming from the photoresistor
 var ANALOGPIN = "A0";
-// THe board.on() executes the anonymous function when the 
+// The board.on() executes the anonymous function when the 
 // Partile Photon reports back that it is initialized and ready.
 board.on("ready", function() {
   // Set the pin you connected to the LED to OUTPUT mode

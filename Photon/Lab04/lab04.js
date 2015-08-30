@@ -25,6 +25,8 @@ var config = {
 config.store = new Store(config);
 service = new nitrogen.Service(config);
 
+// Create a new Nitrogen device for the photoresistor
+// This device will send data it reads from a sensor
 lightSensor = new nitrogen.Device({
     nickname: process.env.PARTICLE_DEVICE + 'lab04_lightSensor',
     name: process.env.PARTICLE_DEVICE + 'Lab 04 Light Sensor'

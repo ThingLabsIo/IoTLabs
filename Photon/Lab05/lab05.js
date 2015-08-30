@@ -10,7 +10,7 @@ Read more about Nitrogen at http://nitrogen.io
 // Define the Jonny Five and Spark-IO variables
 var five = require("johnny-five"),
     board, photoresistor;
-var Particle = require("particle-io");
+var Spark = require("spark-io");
 var Store = require("nitrogen-file-store"),
     nitrogen = require("nitrogen"),
     service, lightSensor;
@@ -34,7 +34,7 @@ lightSensor = new nitrogen.Device({
 
 // Define the Johnny Five board as your Particle Photon
 board = new five.Board({
-  io: new Particle({
+  io: new Spark({
     token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
     deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
   })

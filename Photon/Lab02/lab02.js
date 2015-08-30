@@ -30,6 +30,6 @@ board.on("ready", function(){
   this.analogRead(ANALOGPIN, function(val) {
     // Multiple the value by 3.3V / 1024, which the the
     // value range of the photoresistor
-    console.log(val * (3.3 / 1024.0));
+    console.log('val: ' + val + '; voltage: ' + (val * (3.3 / 1024.0)));
   });
 });

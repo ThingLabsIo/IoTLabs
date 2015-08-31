@@ -40,7 +40,7 @@ board = new five.Board({
   })
 });
 
-var LEDPIN = 13;
+var LEDPIN = "D0";
 
 // Connect the lightSensor device defined above
 // to the Nitrogen service instance.

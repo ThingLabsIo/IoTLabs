@@ -1,16 +1,16 @@
 /*
 Particle Photon 'COnnected Ambient Light' with Node.js and Johnny-Five
 By: Doug Seven
-Licence: MIT
+License: MIT
 
 This example uses Nitrogen, an open source IoT service.
 Read more about Nitrogen at http://nitrogen.io 
 */
 
-// Define the Jonny Five and Spark-IO variables
+// Define the Jonny Five and Particle-IO variables
 var five = require("johnny-five"),
     board, photoresistor;
-var Spark = require("spark-io");
+var particle = require("particle-io");
 var Store = require("nitrogen-file-store"),
     nitrogen = require("nitrogen"),
     service, lightSensor;
@@ -28,28 +28,29 @@ service = new nitrogen.Service(config);
 // Create a new Nitrogen device for the photoresistor
 // This device will send data it reads from a sensor
 lightSensor = new nitrogen.Device({
-    nickname: process.env.PARTICLE_DEVICE + 'lab04_lightSensor',
-    name: process.env.PARTICLE_DEVICE + 'Lab 04 Light Sensor'
+    nickname: process.env.PARTICLE_DEVICE + '-lab04_lightSensor',
+    name: process.env.PARTICLE_DEVICE + '-Lab 04 Light Sensor'
 });
     
 // Define the Johnny Five board as your Particle Photon
 board = new five.Board({
-  io: new Spark({
+  io: new particle({
     token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
     deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
   })
 });
 
-// Connect the lightSensor device defined above
-// to the Nitrogen service instance.
-service.connect(lightSensor, function(err, session, lightSensor) {
-    if (err) { return console.log('Failed to connect lightSensor: ' + err); }
 
     // The board.on() executes the anonymous function when the 
     // Partile Photon reports back that it is initialized and ready.
     board.on("ready", function(){
       console.log("Board connected...");
-        
+
+// Connect the lightSensor device defined above
+// to the Nitrogen service instance.
+service.connect(lightSensor, function(err, session, lightSensor) {
+    if (err) { return console.log('Failed to connect lightSensor: ' + err); }
+            
         // Create a new 'photoresistor' hardware instance.
         photoresistor = new five.Sensor({
             pin: "A0",  // Analog pin 0

@@ -1,20 +1,20 @@
 /*
 Particle Photon 'Hello World' with Node.js and Johnny-Five
 By: Doug Seven
-Licence: MIT
+License: MIT
 
-This example is based on the documentation for the Spark-IO
+This example is based on the documentation for the Particle-IO
 plug-in for Johnny Five by Rick Waldron <waldron.rick@gmail.com>.
 See https://github.com/rwaldron/spark-io for the complete
 documentation. 
 */
 
-// Define the Jonny Five and Spark-IO variables
+// Define the Jonny Five and Particle-IO variables
 var five = require("johnny-five");
-var spark = require("spark-io");
+var particle = require("particle-io");
 // Define the Johnny Five board as your Particle Photon
 var board = new five.Board({
-  io: new spark({
+  io: new particle({
     token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
     deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
   })

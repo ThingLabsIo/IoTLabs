@@ -11,17 +11,17 @@ documentation.
 
 // Define the Jonny Five and Spark-IO variables
 var five = require("johnny-five");
-var spark = require("spark-io");
+var particle = require("particle-io");
 // Define the Johnny Five board as your Particle Photon
 var board1 = new five.Board({
-  io: new spark({
+  io: new particle({
     token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
     deviceId: 'D7P003'
   })
 });
 
 var board2 = new five.Board({
-  io: new spark({
+  io: new particle({
     token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
     deviceId: 'D7P004'
   })

@@ -9,7 +9,7 @@ Read more about Nitrogen at http://nitrogen.io
 
 // Define the Jonny Five and Spark-IO variables
 var five = require("johnny-five"),
-    board, photoresistor;
+    board, photoresistor, led;
 var Spark = require("spark-io");
 var Store = require("nitrogen-file-store"),
     nitrogen = require("nitrogen"),

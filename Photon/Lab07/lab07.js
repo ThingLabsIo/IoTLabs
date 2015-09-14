@@ -1,7 +1,7 @@
 // Define the Jonny Five and Spark-IO variables
 var five = require ("johnny-five"),
     board, photoresistor;
-var Spark = require("spark-io");
+var particle = require("particle-io");
 var https = require('https');
 var crypto = require('crypto');
 
@@ -16,7 +16,7 @@ var keyValue = process.env.EH_KEY || 'YOUR EVENT HUB KEY HERE';
 
 // Define the Johnny Five board as your Particle Photon
 var board = new five.Board({
-  io: new Spark({
+  io: new particle({
     token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
     deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
   })

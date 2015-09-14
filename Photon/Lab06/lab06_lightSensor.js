@@ -15,7 +15,7 @@ Wire up an ambient light sensor like the one in Lab 04.
 // Define the Jonny Five and Spark-IO variables
 var five = require ("johnny-five"),
     board, photoresistor;
-var Spark = require("spark-io");
+var particle = require("particle-io");
 var Store = require("nitrogen-file-store"),
     nitrogen = require("nitrogen"),
     service, lightSensor;
@@ -39,7 +39,7 @@ lightSensor = new nitrogen.Device({
 
 // Define the Johnny Five board as your Particle Photon
 board = new five.Board({
-  io: new Spark({
+  io: new particle({
     token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
     deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
   })

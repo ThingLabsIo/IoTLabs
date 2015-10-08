@@ -1,0 +1,14 @@
+{
+  "name": "Azure-IoT-Labs",
+  "version": "0.1.0",
+  "private":true,
+  "description": "Sample app that connects a device to Azure using Node.js",
+  "main": "weather.js",
+    "author": "YOUR NAME HERE",
+  "license": "MIT",
+  "dependencies": {
+    "azure-iot-device": "^1.0.0-preview.3",
+    "johnny-five": "^0.8.98",
+    "particle-io": "^0.10.1"
+  }
+}

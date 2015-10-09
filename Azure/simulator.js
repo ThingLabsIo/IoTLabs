@@ -49,6 +49,7 @@ setInterval(function(){
   }
 }, 10000);
 
+/*
 // Monitor notifications from IoT Hub and print them in the console.
 setInterval(function(){
     client.receive(function (err, res, msg) {
@@ -62,7 +63,8 @@ setInterval(function(){
         }
     });
 }, 1800000);
-    
+*/
+
 // Helper function to print results in the console
 function printResultFor(op) {
   return function printResult(err, res) {
@@ -82,12 +84,12 @@ function createSimulatedSensors(){
 
 function updateSensor(sensor){
   var newSensor = sensor;
-  newSensor.celsius = randomXToY(sensor.celsius, 1);
+  newSensor.celsius = randomXToY(sensor.celsius, 0.2);
   newSensor.fahrenheit = (newSensor.celsius * 9/5) + 32;
-  newSensor.relativeHumidity = randomXToY(sensor.relativeHumidity, 2);
+  newSensor.relativeHumidity = randomXToY(sensor.relativeHumidity, 0.2);
   newSensor.pressure = randomXToY(sensor.pressure, 1);
-  newSensor.altitude_f = randomXToY(sensor.altitude_f, 1);
-  newSensor.altitude_m = randomXToY(sensor.altitude_f, 0.3);
+  newSensor.altitude_f = randomXToY(sensor.altitude_f, 0.1);
+  newSensor.altitude_m = randomXToY(sensor.altitude_f, 0.03);
   
   return newSensor;
 }

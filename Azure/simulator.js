@@ -49,22 +49,6 @@ setInterval(function(){
   }
 }, 10000);
 
-/*
-// Monitor notifications from IoT Hub and print them in the console.
-setInterval(function(){
-    client.receive(function (err, res, msg) {
-        if (!err && res.statusCode !== 204) {
-            console.log('Received data: ' + msg.getData());
-            client.complete(msg, printResultFor('complete'));
-        }
-        else if (err)
-        {
-            printResultFor('receive')(err, res);
-        }
-    });
-}, 1800000);
-*/
-
 // Helper function to print results in the console
 function printResultFor(op) {
   return function printResult(err, res) {

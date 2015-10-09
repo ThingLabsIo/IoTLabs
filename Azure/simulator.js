@@ -22,7 +22,6 @@ createSimulatedSensors();
 // in a field gateway and aggregate the data into a single message.
 // This would reduce the message count.
 setInterval(function(){
-  console.log("looping")
   // Set up valiables used for the simulation
   var sensor;
   // Iterate through each of the five devices to gather the device data
@@ -74,7 +73,6 @@ function printResultFor(op) {
 
 
 function createSimulatedSensors(){
-  console.log("createSimulatedSensors invoked");
   sensors.push({"deviceId":"MyDevice01","location":"kitchen","fahrenheit":74,"celsius":23.3,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
   sensors.push({"deviceId":"MyDevice02","location":"living-room","fahrenheit":72,"celsius":22.2,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
   sensors.push({"deviceId":"MyDevice03","location":"bedroom1","fahrenheit":71,"celsius":21.6,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
@@ -83,7 +81,6 @@ function createSimulatedSensors(){
 }
 
 function updateSensor(sensor){
-  console.log("updateSensor invoked for sensorId " + sensor.deviceId);
   var newSensor = sensor;
   newSensor.celsius = randomXToY(sensor.celsius, 1);
   newSensor.fahrenheit = (newSensor.celsius * 9/5) + 32;

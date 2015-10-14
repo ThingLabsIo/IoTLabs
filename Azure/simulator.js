@@ -32,12 +32,12 @@ setInterval(function(){
     var payload = JSON.stringify({
         deviceId: sensor.deviceId,
         location: sensor.location,
-        fahrenheit: sensor.fahrenheit,
         celsius: sensor.celsius,
+        fahrenheit: sensor.fahrenheit,
         relativeHumidity: sensor.relativeHumidity,
         pressure: sensor.pressure,
-        altitude_f: sensor.altitude_f,
-        altitude_m: sensor.altitude_f,
+        feet: sensor.altitude_f,
+        meters: sensor.altitude_f,
       });
       
       // Create the message based on the payload JSON

@@ -30,3 +30,5 @@ node_modules
 api.nitrogen.io_443
 *.io_443
 *_3030
+
+.vscode/settings.json

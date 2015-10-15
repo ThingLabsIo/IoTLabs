@@ -38,7 +38,8 @@ board.on("ready", function() {
     // Controllers for these are wrapped in the convenient `Weather` plugin class:
     var weather = new Weather({
       variant: "PHOTON",
-      freq: 1000
+      freq: 1000,
+      elevation: -1
     });
     
     // The weather.on("data", callback) function invokes the anonymous callback function 

@@ -30,3 +30,12 @@ node_modules
 api.nitrogen.io_443
 *.io_443
 *_3030
+
+# Git files
+*.gitattributes
+
+# RPI2 Labs
+RPi2/.vs/
+RPi2/Lab01/Lab01/bin/
+RPi2/Lab01/Lab01/obj/
+*.pfx

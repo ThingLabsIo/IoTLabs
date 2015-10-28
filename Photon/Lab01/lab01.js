@@ -15,8 +15,8 @@ var particle = require("particle-io");
 // Define the Johnny Five board as your Particle Photon
 var board = new five.Board({
   io: new particle({
-    token: process.env.PARTICLE_KEY || 'YOUR API KEY HERE',
-    deviceId: process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID OR ALIAS HERE'
+    token: 'ee83f8e456dcc565806917774937e2fa3180a058',
+    deviceId: 'D7P001'
   })
 });
 // Define the pin that is connected to the LED

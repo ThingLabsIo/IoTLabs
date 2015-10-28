@@ -32,12 +32,12 @@ setInterval(function(){
     var payload = JSON.stringify({
         deviceId: sensor.deviceId,
         location: sensor.location,
-        fahrenheit: sensor.fahrenheit,
         celsius: sensor.celsius,
+        fahrenheit: sensor.fahrenheit,
         relativeHumidity: sensor.relativeHumidity,
         pressure: sensor.pressure,
-        altitude_f: sensor.altitude_f,
-        altitude_m: sensor.altitude_f,
+        feet: sensor.altitude_f,
+        meters: sensor.altitude_f,
       });
       
       // Create the message based on the payload JSON
@@ -48,22 +48,6 @@ setInterval(function(){
       client.sendEvent(message, printResultFor('send'));
   }
 }, 10000);
-
-/*
-// Monitor notifications from IoT Hub and print them in the console.
-setInterval(function(){
-    client.receive(function (err, res, msg) {
-        if (!err && res.statusCode !== 204) {
-            console.log('Received data: ' + msg.getData());
-            client.complete(msg, printResultFor('complete'));
-        }
-        else if (err)
-        {
-            printResultFor('receive')(err, res);
-        }
-    });
-}, 1800000);
-*/
 
 // Helper function to print results in the console
 function printResultFor(op) {

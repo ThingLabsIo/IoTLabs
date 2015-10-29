@@ -8,27 +8,32 @@ plug-in for Johnny Five by Rick Waldron <waldron.rick@gmail.com>.
 See https://github.com/rwaldron/spark-io for the complete
 documentation. 
 */
-
-// Define the Jonny Five and Particle-IO variables
-var five = require("johnny-five");
-var particle = require("particle-io");
-// Define the Johnny Five board as your Particle Photon
-var board = new five.Board({
-  io: new particle({
-    token: 'ee83f8e456dcc565806917774937e2fa3180a058',
-    deviceId: 'D7P001'
-  })
+var five = require ("johnny-five"); 
+var Particle = require("particle-io");
+// Set up the access credentials for Particle and Azure 
+var token = process.env.PARTICLE_KEY || 'YOUR PARTICLE ACCESS TOKEN HERE'; 
+var deviceId = process.env.PHOTON_ID || 'YOUR PARTICLE PHOTON DEVICE ID/ALIAS HERE'; 
+// Define the pin that is connected to the LED 
+var LEDPIN = 'D7';
+// Create a Johnny Five board instance to represent your Particle Photon.
+// Board is simply an abstraction of the physical hardware, whether it is 
+// a Photon, Arduino, Raspberry Pi or other boards. 
+var board = new five.Board({ 
+	io: new Particle({ 
+		token: token, 
+		deviceId: deviceId 
+	}) 
 });
-// Define the pin that is connected to the LED
-var LEDPIN = "D7";
-// THe board.on() executes the anonymous function when the 
-// Partile Photon reports back that it is initialized and ready.
-board.on("ready", function(){
-  // Set the pin you connected to the LED to OUTPUT mode
-  this.pinMode(LEDPIN, five.Pin.OUTPUT);
-  // Create a loop to "flash/blink/strobe" an led
-  var val = 0;
-  this.loop( 1000, function() {
-    this.digitalWrite(LEDPIN, (val = val ? 0 : 1));
-  });
+
+// The board.on() executes the anonymous function when the
+// board reports back that it is initialized and ready. 
+board.on("ready", function() { 
+	console.log("Board connected..."); 
+	// Set the pin you connected to the LED to OUTPUT mode  
+	this.pinMode(LEDPIN, five.Pin.OUTPUT); 
+
+	// Create a loop to "flash/blink/strobe" an led  
+	var val = 0;  this.loop( 1000, function() {
+		this.digitalWrite(LEDPIN, (val = val ? 0 : 1));
+	});
 });

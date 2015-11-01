@@ -42,7 +42,7 @@ setInterval(function(){
       
       // Create the message based on the payload JSON
       var message = new device.Message(payload);
-      // For debugging purposes, write out the message paylod to the console
+      // For debugging purposes, write out the message payload to the console
       console.log("Sending message: " + message.getData());
       // Send the message to Azure IoT Hub
       client.sendEvent(message, printResultFor('send'));

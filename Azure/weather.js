@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
 'use strict';
-// Define the Jonny Five, Particle and Azure IoT objects
+// Define the Johnny Five, Particle and Azure IoT objects
 var five = require ("johnny-five");
 var Weather = require("j5-sparkfun-weather-shield")(five);
 var device = require('azure-iot-device');
@@ -60,7 +60,7 @@ board.on("ready", function() {
       
       // Create the message based on the payload JSON
       var message = new device.Message(payload);
-      // For debugging purposes, write out the message paylod to the console
+      // For debugging purposes, write out the message payload to the console
       console.log("Sending message: " + message.getData());
       // Send the message to Azure IoT Hub
       client.sendEvent(message, printResultFor('send'));

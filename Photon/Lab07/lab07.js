@@ -1,4 +1,4 @@
-// Define the Jonny Five and Spark-IO variables
+// Define the Johnny Five and Spark-IO variables
 var five = require ("johnny-five"),
     board, photoresistor;
 var particle = require("particle-io");
@@ -73,7 +73,7 @@ board.on("ready", function(){
       console.error(e);
     });
     
-    // Write the message paylod to the request stream
+    // Write the message payload to the request stream
     req.write(payload);
     // End/close the request
     req.end();

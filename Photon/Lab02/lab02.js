@@ -9,7 +9,7 @@ See https://github.com/rwaldron/spark-io for the complete
 documentation. 
 */
 
-// Define the Jonny Five and Particle-IO variables
+// Define the Johnny Five and Particle-IO variables
 var five = require("johnny-five");
 var particle = require("particle-io");
 // Define the Johnny Five board as your Particle Photon

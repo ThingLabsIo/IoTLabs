@@ -12,7 +12,7 @@ device and doesn't accept any command.
 Wire up an ambient light sensor like the one in Lab 04.
 */
 
-// Define the Jonny Five and Spark-IO variables
+// Define the Johnny Five and Spark-IO variables
 var five = require ("johnny-five"),
     board, photoresistor;
 var particle = require("particle-io");

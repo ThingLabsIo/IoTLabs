@@ -17,7 +17,7 @@ For this lab, wire up a LED to pin D0 and GND (using a resistor between
 the negative lead and the GND pin.
 */
 
-// Define the Jonny Five and Spark-IO variables
+// Define the Johnny Five and Spark-IO variables
 var five = require ("johnny-five"),
     board, led;
 var particle = require("particle-io");

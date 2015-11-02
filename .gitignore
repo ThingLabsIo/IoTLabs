@@ -31,6 +31,9 @@ api.nitrogen.io_443
 *.io_443
 *_3030
 
+<<<<<<< HEAD
+.vscode/settings.json
+=======
 # Git files
 *.gitattributes
 
@@ -42,3 +45,4 @@ RPi2/Lab01/Lab01/obj/
 RPi2/Lab01/.vs/Lab01/v14/.suo
 *.suo
 *.suo
+>>>>>>> origin/master

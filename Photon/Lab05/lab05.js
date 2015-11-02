@@ -7,7 +7,7 @@ This example uses Nitrogen, an open source IoT service.
 Read more about Nitrogen at http://nitrogen.io 
 */
 
-// Define the Jonny Five and Spark-IO variables
+// Define the Johnny Five and Spark-IO variables
 var five = require("johnny-five"),
     board, photoresistor, led;
 var particle = require("particle-io");

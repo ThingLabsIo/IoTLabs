@@ -17,7 +17,7 @@ namespace Lab01
     public sealed partial class MainPage : Page
     {
         // Define the physical pin connected to the LED.
-        private const int LED_PIN = 5;
+        private const int LED_PIN = 12;
         // Deifne a valiable to represent the pin as an object.
         private GpioPin pin;
         // Define a valiable to hold the value of the pin (HIGH or LOW).

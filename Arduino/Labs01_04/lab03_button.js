@@ -1,4 +1,4 @@
-/* Lab 02 Button Input
+/* Lab 03 Button Input
  * In this lab you will create a button that causes an LED
  * to turn off, on, or pulse if the button is held down. You will
  * learn how to detect button up, down and hold states.

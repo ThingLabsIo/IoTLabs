@@ -1,0 +1,16 @@
+{
+  "name": "IoT-Labs-Arduino",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThingLabsIo/IoTLabs/Arduino"
+  },
+  "version": "0.1.0",
+  "private":true,
+  "description": "Sample app that demonstrates a device connected to a gateway",
+  "main": "lab02.js",
+    "author": "YOUR NAME",
+  "license": "MIT",
+  "dependencies": {
+    "johnny-five": "^0.8.104"
+  }
+}

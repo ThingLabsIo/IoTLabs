@@ -1,5 +1,8 @@
-// Define the Johnny Five and Particle-IO variables
-var five = require("johnny-five"); 
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license.
+'use strict';
+// Define the Johnny Five component
+var five = require("johnny-five");
 
 // Create a Johnny Five board instance to represent your Arduino.
 // Board is simply an abstraction of the physical hardware, whether it is 

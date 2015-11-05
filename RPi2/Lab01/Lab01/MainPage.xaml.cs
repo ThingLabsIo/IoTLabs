@@ -9,7 +9,7 @@ namespace Lab01
 {
     /// <summary>
     /// In this Raspberry Pi 2 / WIndows IoT Core sample, 
-    /// the app sends voltage out over GPIO pin 5 to create a blonking LED.
+    /// the app sends voltage out over GPIO pin 12 to create a blinking LED.
     /// This is the 'Hello, World!' of the IoT space.
     /// This code is based on the Blinky sample at 
     /// http://ms-iot.github.io/content/en-US/win10/samples/Blinky.htm
@@ -24,8 +24,9 @@ namespace Lab01
         private GpioPinValue pinValue;
         // Define a time used to control the frequency of events.
         private DispatcherTimer timer;
-        // Define a color bruch for the on screen representation of the LED and initialize it to Red.
-        private SolidColorBrush brush = new SolidColorBrush(Windows.UI.Colors.Red);
+        // Define a color brushes for the on screen representation of the LED.
+        private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+        private SolidColorBrush grayBrush = new SolidColorBrush(Windows.UI.Colors.LightGray);
 
         public MainPage()
         {
@@ -76,19 +77,17 @@ namespace Lab01
                 // If the current state of the pin is LOW (off), then set it to HIGH (on)
                 // and update the on screen UI to represent the LED in the on state
                 pinValue = GpioPinValue.High;
-                brush = new SolidColorBrush(Windows.UI.Colors.Red);
+                LedGraphic.Fill = redBrush;
             }
             else
             {
                 // If the current state of the pin is HIGH (on), then set it to LOW (off)
                 // and update the on screen UI to represent the LED in the off state
                 pinValue = GpioPinValue.Low;
-                brush = new SolidColorBrush(Windows.UI.Colors.LightGray); ;
+                LedGraphic.Fill = grayBrush;
             }
             // Write the state to to pin
             pin.Write(pinValue);
-            // Update the on screen UI
-            LedGraphic.Fill = brush;
         }
     }
 }

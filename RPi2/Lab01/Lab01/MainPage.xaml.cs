@@ -8,7 +8,7 @@ using Windows.Devices.Gpio;
 namespace Lab01
 {
     /// <summary>
-    /// In this Raspberry Pi 2 / WIndows IoT Core sample, 
+    /// In this Raspberry Pi 2 / Windows IoT Core sample, 
     /// the app sends voltage out over GPIO pin 12 to create a blinking LED.
     /// This is the 'Hello, World!' of the IoT space.
     /// This code is based on the Blinky sample at 
@@ -18,9 +18,9 @@ namespace Lab01
     {
         // Define the physical pin connected to the LED.
         private const int LED_PIN = 12;
-        // Deifne a valiable to represent the pin as an object.
+        // Deifne a variable to represent the pin as an object.
         private GpioPin pin;
-        // Define a valiable to hold the value of the pin (HIGH or LOW).
+        // Define a variable to hold the value of the pin (HIGH or LOW).
         private GpioPinValue pinValue;
         // Define a time used to control the frequency of events.
         private DispatcherTimer timer;
@@ -35,7 +35,7 @@ namespace Lab01
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += Timer_Tick;
-            // Initilize the GPIO bus
+            // Initialize the GPIO bus
             InitGpio();
             // As long as the pin object is not null, proceed with the timer.
             if (pin != null)
@@ -71,7 +71,7 @@ namespace Lab01
         private void Timer_Tick(object sender, object e)
         {
             // This Timer event will be raised on each timer interval (defined above)
-            
+
             if (pinValue == GpioPinValue.Low)
             {
                 // If the current state of the pin is LOW (off), then set it to HIGH (on)

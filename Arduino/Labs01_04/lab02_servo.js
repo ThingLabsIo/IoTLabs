@@ -1,4 +1,4 @@
-/* Lab 01 Servo Output
+/* Lab 02 Servo Output
  * In this lab you will create a servo device that moves to a random
  * position every two-seconds to demonstrate servo control.
  * 
@@ -19,11 +19,6 @@ board.on("ready", function() {
     var servo = new five.Servo({
         pin: 10,
         startAt: 0
-    });
-    
-    // Add servo to REPL (optional)
-    this.repl.inject({
-        servo: servo
     });
     
     var pos;

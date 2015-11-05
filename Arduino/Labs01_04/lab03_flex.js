@@ -1,50 +1,48 @@
-/* Lab 02 Temperature Input
- * In this lab you will create a temperature sensor that changes the brightness
- * of an LED based on the ambient temperature.
+/* Lab 03 Flex Resistor Input
+ * In this lab you will create a flex device that changes the brightness
+ * of an LED based on the amount the flex sensor is bent.
  * 
  * You could easily replace the LED with another variable output device,
  * like a servoe or a motor.
  *
- * For this lab, wire up a TMP36 temperature sensor with the center pin 
- * connected to Analog Input 3.
+ * For this lab, wire up a flex sensor on a voltage divide similar to how
+ * you wired up the photoresistor in Lab 02. Use a 10k Ohm resistor in the 
+ * voltage divider and connect the positive line to A1. 
  * Wire up an LED to digital output 13.
  */
  var five = require("johnny-five"),
-  tmp, led;
+  flex, led;
 
 var board = new five.Board();
 
 board.on("ready", function() {
     console.log("Board connected...");
 
-    var temperature = new five.Temperature({
-      controller: "TMP36",
-      pin: "A2",
-      freq: 500
+    // Create a new instance of the Sensor type for the Flex sensor
+    flex = new five.Sensor({
+      pin: "A1", // The Analog In pin
+      freq: 25 // The frequency to read data in (25 milliseconds)
     });
 
     led = new five.Led(13);
 
     var brightness = 0;
     
-    temperature.on("data", function(err, data) {
-      var c, f;
+    // Scale the sensor's value to the LED's brightness range
+    flex.on("data", function() {
       
-      c = Math.floor(data.celsius);
-      f = Math.floor(data.fahrenheit);
-      
-      console.log(c + "°C", f + "°F");
-      
-      // Map the temperature value (a °F range of 75-100 is pretty good)
-      // to the range for LED brightness
-      brightness = map(f, 75, 100, 0, 255);
+      console.log("Flex position: " + this.value);
+     
+      // Mapp the flex value (typically between 600-900) to 
+      // the range for LED brightness
+      brightness = map(this.value, 660, 900, 0, 255);
       brightness = constrain(brightness, 0, 255);
      
       // Set the LED brightness using PWM.
       led.brightness(brightness);
     });
 });
-
+  
 // This function maps a value from one range into another range
 // Example: map (25, 0, 25, 0, 50) returns 50
 // Example: map (20, 0, 100, 0, 10) returns 2

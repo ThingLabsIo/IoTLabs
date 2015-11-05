@@ -1,4 +1,4 @@
-/* Lab 01 LED RGB Output
+/* Lab 02 LED RGB Output
  * In this lab you will randomly change the color of an RGB LED..
  * 
  *
@@ -6,7 +6,8 @@
  * the next longest connected to digital pin 5, the next one connected to 
  * digital pin 2, and the shortest one connected to digital pin 6.
  */
- var five = require("johnny-five");
+// Define the Johnny Five and Particle-IO variables
+var five = require("johnny-five"); 
 var board = new five.Board();
 var r, g, b;
 
@@ -20,11 +21,6 @@ board.on("ready", function() {
             green: 5,
             blue: 3
         }
-    });
-    
-    // Add led to REPL (optional)
-    this.repl.inject({
-        led: led
     });
 
     // Turn on the LED

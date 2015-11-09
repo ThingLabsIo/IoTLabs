@@ -1,1 +1,0 @@
-C:\Development\gh\IoTLabs\RPi2\Lab03\Lab03\Lab03.csproj;x86

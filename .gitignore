@@ -38,7 +38,10 @@ api.nitrogen.io_443
 RPi2/.vs/
 RPi2/Lab01/Lab01/bin/
 RPi2/Lab01/Lab01/obj/
-*.pfx
 RPi2/Lab01/.vs/Lab01/v14/.suo
+RPi2/Lab03/Lab03/bin/
+RPi2/Lab03/Lab03/obj/
+RPi2/Lab03/.vs/Lab03/v14/.suo
+*.pfx
 *.suo
 *.suo

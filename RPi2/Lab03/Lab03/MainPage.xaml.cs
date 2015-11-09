@@ -30,26 +30,23 @@ namespace Lab03
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        enum AdcDevice { None, MCP3002, MCP3208 };
-
         // Use the device specific connection string here
-        private const string IOT_HUB_CONN_STRING = "HostName=iot-labs.azure-devices.net;DeviceId=ThingLabs00;SharedAccessKey=Zcpwj/z/ezloiepWV6I32Px3D1HxKSSP5x/ayL6NUb0=";
-        // Set this to the appropriate ADC
-        private AdcDevice ADC_DEVICE = AdcDevice.MCP3002;
+        private const string IOT_HUB_CONN_STRING = "YOUR DEVICE SPECIFIC CONNECTION STRING GOES HERE";
+        // Use the name of your Azure IoT device here - this should be the same as the name in the connections string
+        private const string IOT_HUB_DEVICE = "YOUR DEVICE NAME GOES HERE";
+        // Provide a short description of the location of the device, such as 'Home Office' or 'Garage'
+        private const string IOT_HUB_DEVICE_LOCATION = "YOUR DEVICE LOCATION GOES HERE";
 
         private const Int32 SPI_CHIP_SELECT_LINE = 0; // Line 0 maps to physical pin 24 on the RPi2
         private const string SPI_CONTROLLER_NAME = "SPI0";
-        private const byte MCP3002_CONFIG = 0x68; // 01101000 channel configuration data for MCP3002
-        private const byte MCP3208_CONFIG = 0x06; // 00000110 channel configuration data for MCP3208
-        private const int RED_LED_PIN = 4;
-        private const int WHITE_LED_PIN = 5;
+        private const int ADC_RESOLUTION = 4096; // Use 1024 for the MCP3002
+        private const int RED_LED_PIN = 12;
 
         private SolidColorBrush redFill = new SolidColorBrush(Windows.UI.Colors.Red);
         private SolidColorBrush grayFill = new SolidColorBrush(Windows.UI.Colors.LightGray);
 
         DeviceClient deviceClient;
         private GpioPin redLedPin;
-        private GpioPin whiteLedPin;
         private SpiDevice SpiAdc;
         private Timer readSensorTimer;
         private Timer sendMessageTimer;
@@ -58,20 +55,16 @@ namespace Lab03
         public MainPage()
         {
             this.InitializeComponent();
+            
             // Register the Unloaded event to clean up on exit
             Unloaded += MainPage_Unloaded;
+            
             // Initialize GPIO and SPI
             InitAll();
         }
 
         private async void InitAll()
         {
-            if (ADC_DEVICE == AdcDevice.None)
-            {
-                StatusText.Text = "Please change the ADC_DEVICE variable to either MPC3002 or MPC3208.";
-                return;
-            }
-
             try
             {
                 InitGpio();
@@ -82,52 +75,19 @@ namespace Lab03
                 StatusText.Text = ex.Message;
                 return;
             }
-
-            deviceClient = DeviceClient.CreateFromConnectionString(IOT_HUB_CONN_STRING);
+            
             // Read sensors ever 25ms and refresh the UI
             readSensorTimer = new Timer(this.SensorTimer_Tick, null, 0, 25);
+            
+            // Instantiate the Azure device client
+            deviceClient = DeviceClient.CreateFromConnectionString(IOT_HUB_CONN_STRING);
+            
             // Send messages to Azure IoT Hub every one-second
             sendMessageTimer = new Timer(this.MessageTimer_Tick, null, 0, 1000);
-            // Initiate a check for incoming Cloud-to-Device messages
-            ReceiveDataFromAzure();
-
+            
             StatusText.Text = "Status: Running";
         }
-
-        public async Task ReceiveDataFromAzure()
-        {
-            Message receivedMessage;
-            string messageData;
-
-            while (true)
-            {
-                receivedMessage = await deviceClient.ReceiveAsync();
-
-                if (receivedMessage != null)
-                {
-                    messageData = Encoding.ASCII.GetString(receivedMessage.GetBytes());
-
-                    // Message:"10/26/2015 1:08:06 PM - LED:on"
-                    if (messageData.Contains("LED:on"))
-                    {
-                        redLedPin.Write(GpioPinValue.Low);
-                    }
-                    else if (messageData.Contains("LED:off"))
-                    {
-                        redLedPin.Write(GpioPinValue.High);
-                    }
-
-                    // UI updates must be invoked on the UI thread
-                    var task = this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                    {
-                        MessageLog.Text = "Received message: " + messageData + "\n" + MessageLog.Text;
-                    });
-
-                    await deviceClient.CompleteAsync(receivedMessage);
-                }
-            }
-        }
-
+        
         private void MessageTimer_Tick(object state)
         {
             SendMessageToIoTHub(adcValue);
@@ -137,18 +97,23 @@ namespace Lab03
         {
             try
             {
-                var text = "{\"deviceId\": \"Thinglabs00\", \"location\": \"Home Office\", \"data\": \"darkness:" +
-                    darkness + "\", \"localTimestamp\": \"" +
-                    DateTime.Now.ToLocalTime().ToString() + "\"}";
-
+                 var payload = "{\"deviceId\": \"" +
+                    IOT_HUB_DEVICE + 
+                    "\", \"location\": \"" +
+                    IOT_HUB_DEVICE_LOCATION +
+                    "\", \"data\": \"darkness:" +
+                    adcValue + 
+                    "\", \"localTimestamp\": \"" +
+                    DateTime.Now.ToLocalTime().ToString() + 
+                    "\"}";
 
                 // UI updates must be invoked on the UI thread
                 var task = this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    MessageLog.Text = "Sending message: " + text + "\n" + MessageLog.Text;
+                    MessageLog.Text = "Sending message: " + payload + "\n" + MessageLog.Text;
                 });
 
-                var msg = new Message(Encoding.UTF8.GetBytes(text));
+                var msg = new Message(Encoding.UTF8.GetBytes(payload));
 
                 await deviceClient.SendEventAsync(msg);
             }
@@ -170,21 +135,10 @@ namespace Lab03
 
         private void LightLed()
         {
-            int adcResolution = 0;
             SolidColorBrush fillColor = grayFill;
 
-            switch (ADC_DEVICE)
-            {
-                case AdcDevice.MCP3002:
-                    adcResolution = 1024;
-                    break;
-                case AdcDevice.MCP3208:
-                    adcResolution = 4096;
-                    break;
-            }
-
             // Tunr on LED if potentiometer is rotated more than halfway
-            if (adcValue > adcResolution / 2)
+            if (adcValue > ADC_RESOLUTION / 2)
             {
                 redLedPin.Write(GpioPinValue.Low);
                 fillColor = redFill;
@@ -204,27 +158,24 @@ namespace Lab03
 
         private void ReadAdc()
         {
-            byte[] readBuffer = new byte[3]; // Buffer to hold read data
+            // Create a buffer to hold the read data
+            byte[] readBuffer = new byte[3];
             byte[] writeBuffer = new byte[3] { 0x00, 0x00, 0x00 };
+            
+            // Set the SPI configuration data in the first position
+            // MCP3208 or MCP3008 use 0x06 - 00000110 channel configuration data
+            // MCP3002 use 0x68 - 01101000 channel configuration data
+            writeBuffer[0] = 0x06;
 
-            switch (ADC_DEVICE)
-            {
-                case AdcDevice.MCP3002:
-                    writeBuffer[0] = MCP3002_CONFIG;
-                    break;
-                case AdcDevice.MCP3208:
-                    writeBuffer[0] = MCP3208_CONFIG;
-                    break;
-            }
-
-            SpiAdc.TransferFullDuplex(writeBuffer, readBuffer); // Read data from ADC
+            // Read data from the ADC
+            SpiAdc.TransferFullDuplex(writeBuffer, readBuffer);
             adcValue = convertToInt(readBuffer);
 
             // UI updates must be invoked on the UI thread
             var task = this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 textPlaceHolder.Text = adcValue.ToString();
-                IndicatorBar.Width = Map(adcValue, 0, 1023, 0, 300);
+                IndicatorBar.Width = Map(adcValue, 0, ADC_RESOLUTION-1, 0, 300);
             });
         }
 
@@ -235,21 +186,21 @@ namespace Lab03
 
         private int convertToInt(byte[] data)
         {
-            int result = 0;
-            switch (ADC_DEVICE)
-            {
-                case AdcDevice.MCP3002:
-                    result = data[0] & 0x03;
-                    result <<= 8;
-                    result += data[1];
-                    break;
-                case AdcDevice.MCP3208:
-                    result = data[1] & 0x0F;
-                    result <<= 8;
-                    result += data[2];
-                    break;
-            }
-
+            int result = data[1] & 0x0F;
+            // Shift the bits left
+            result <<= 8;
+            // Add the next set of bits
+            result += data[2];
+            
+            /*
+            // For the MCP3002 use:
+            result = data[0] & 0x03;
+            // Shift the bits left
+            result <<= 8;
+            // Add the next set of bits
+            result += data[1];
+            */
+            
             return result;
         }
 

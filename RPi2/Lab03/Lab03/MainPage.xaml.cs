@@ -87,7 +87,7 @@ namespace Lab03
             // Instantiate the Azure device client
             deviceClient = DeviceClient.CreateFromConnectionString(IOT_HUB_CONN_STRING);
             // Send messages to Azure IoT Hub every one-second
-            sendMessageTimer = new Timer(this.MessageTimer_Tick, null, 0, 10000);
+            sendMessageTimer = new Timer(this.MessageTimer_Tick, null, 0, 1000);
 
             StatusText.Text = "Status: Running";
         }

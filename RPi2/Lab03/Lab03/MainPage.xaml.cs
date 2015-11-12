@@ -22,7 +22,7 @@ namespace Lab03
     {
         // Important! Change this to either AdcDevice.MCP3002, AdcDevice.MCP3208 or 
         // AdcDevice.MCP3008 depending on which ADC you chose
-        private AdcDevice ADC_DEVICE = AdcDevice.MCP3002;
+        private AdcDevice ADC_DEVICE = AdcDevice.MCP3008;
 
         enum AdcDevice { NONE, MCP3002, MCP3208, MCP3008 };
 
@@ -39,10 +39,10 @@ namespace Lab03
 
         // 01101000 channel configuration data for the MCP3002
         private const byte MCP3002_CONFIG = 0x68;
-        // 00000110 channel configuration data for the MCP3208
-        private const byte MCP3208_CONFIG = 0x06;
         // 00001000 channel configuration data for the MCP3008
         private const byte MCP3008_CONFIG = 0x08;
+        // 00000110 channel configuration data for the MCP3208
+        private const byte MCP3208_CONFIG = 0x06;
 
         private const int RED_LED_PIN = 12;
 

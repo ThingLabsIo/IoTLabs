@@ -2,9 +2,9 @@
 // Licensed under the MIT license.
 'use strict';
 // Define the Johnny Five, Particle and Azure IoT objects
-var five = require ("johnny-five");
+var Five = require ("johnny-five");
 var Weather = require("j5-sparkfun-weather-shield")(five);
-var device = require('azure-iot-device');
+var Device = require('azure-iot-device');
 var Particle = require("particle-io");
 
 // Set up the access credentials for Particle and Azure
@@ -16,7 +16,7 @@ var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC 
 // Create a Johnny-Five board instance to represent your Particle Photon
 // Board is simply an abstraction of the physical hardware, whether is is a 
 // Photon, Arduino, Raspberry Pi or other boards.
-var board = new five.Board({
+var board = new Five.Board({
   io: new Particle({
     token: token,
     deviceId: deviceId
@@ -26,7 +26,7 @@ var board = new five.Board({
 // Create an Azure IoT client that will manage the connection to your IoT Hub
 // The client is created in the context of an Azure IoT device, which is why
 // you use a device-specific connection string.
-var client = new device.Client(connectionString, new device.Https());
+var client = Device.Client.fromConnectionString(connectionString);
 
 // The board.on() executes the anonymous function when the 
 // board reports back that it is initialized and ready.
@@ -39,7 +39,7 @@ board.on("ready", function() {
     var weather = new Weather({
       variant: "PHOTON",
       freq: 1000,
-      elevation: -1
+      elevation: 0
     });
     
     // The weather.on("data", callback) function invokes the anonymous callback function 
@@ -59,7 +59,7 @@ board.on("ready", function() {
       });
       
       // Create the message based on the payload JSON
-      var message = new device.Message(payload);
+      var message = new Device.Message(payload);
       // For debugging purposes, write out the message payload to the console
       console.log("Sending message: " + message.getData());
       // Send the message to Azure IoT Hub

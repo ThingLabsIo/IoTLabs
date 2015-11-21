@@ -14,6 +14,7 @@ var Particle = require("particle-io");
 var token = 'YOUR PARTICLE ACCESS TOKEN HERE';
 */
 
+var sensorName = process.env.DEVICE_LOCATION || 'GIVE A UNIQUE NAME TO THE SENSOR';
 var location = process.env.DEVICE_LOCATION || 'GIVE A NAME TO THE LOCATION OF THE THING';
 var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC CONNECTION STRING HERE';
 
@@ -21,7 +22,7 @@ var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC 
 // The client is created in the context of an Azure IoT device, which is why
 // you use a device-specific connection string.
 var client = device.Client.fromConnectionString(connectionString);
-var deviceId = client.ConnectionString.parse(connectionString).DeviceId;
+var deviceId = device.ConnectionString.parse(connectionString).DeviceId;
 
 // Create a Johnny-Five board instance to represent your Particle Photon
 // Board is simply an abstraction of the physical hardware, whether is is a 
@@ -61,6 +62,7 @@ board.on("ready", function() {
     weather.on("data", function () {
       var payload = JSON.stringify({
         deviceId: deviceId,
+        sensorName: sensorName,
         location: location,
         // celsius & fahrenheit are averages taken from both sensors on the shield
         celsius: this.celsius,

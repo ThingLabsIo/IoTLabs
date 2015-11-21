@@ -1,14 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
-
 'use strict';
-
 var device = require('azure-iot-device');
 
 // Use the DeviceExplorer or IotHub-Exploror tools to create a device and get its connection string.
 var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC CONNECTION STRING HERE';
-// Create the Azure IoT Hub Client, which is the local instance of the connected device
-var client = new device.Client(connectionString, new device.Https());
+
+// Create an Azure IoT client that will manage the connection to your IoT Hub
+// The client is created in the context of an Azure IoT device, which is why
+// you use a device-specific connection string.
+var client = device.Client.fromConnectionString(connectionString);
+var deviceId = device.ConnectionString.parse(connectionString).DeviceId;
 
 // For this simulation, create an Array of five simulated devices
 var sensors = new Array();
@@ -59,15 +61,16 @@ function printResultFor(op) {
 
 
 function createSimulatedSensors(){
-  sensors.push({"deviceId":"MyDevice01","location":"kitchen","fahrenheit":74,"celsius":23.3,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
-  sensors.push({"deviceId":"MyDevice02","location":"living-room","fahrenheit":72,"celsius":22.2,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
-  sensors.push({"deviceId":"MyDevice03","location":"bedroom1","fahrenheit":71,"celsius":21.6,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
-  sensors.push({"deviceId":"MyDevice04","location":"front-porch","fahrenheit":61,"celsius":16.6,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
-  sensors.push({"deviceId":"MyDevice05","location":"garage","fahrenheit":69,"celsius":20.5,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
+  sensors.push({"deviceId":deviceId,"sensorName":"MySensor01","location":"kitchen","fahrenheit":74,"celsius":23.3,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
+  sensors.push({"deviceId":deviceId,"sensorName":"MySensor02","location":"living-room","fahrenheit":72,"celsius":22.2,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
+  sensors.push({"deviceId":deviceId,"sensorName":"MySensor03","location":"bedroom1","fahrenheit":71,"celsius":21.6,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
+  sensors.push({"deviceId":deviceId,"sensorName":"MySensor04","location":"front-porch","fahrenheit":61,"celsius":16.6,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
+  sensors.push({"deviceId":deviceId,"sensorName":"MySensor05","location":"garage","fahrenheit":69,"celsius":20.5,"relativeHumidity":38.124603271484375,"pressure":100.9900,"altitude_f":198.6958725,"altitude_m":60.5625});
 }
 
 function updateSensor(sensor){
   var newSensor = sensor;
+
   newSensor.celsius = randomXToY(sensor.celsius, 0.2);
   newSensor.fahrenheit = (newSensor.celsius * 9/5) + 32;
   newSensor.relativeHumidity = randomXToY(sensor.relativeHumidity, 0.2);

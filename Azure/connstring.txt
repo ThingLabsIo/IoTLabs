@@ -1,1 +1,0 @@
-HostName=iot-labs.azure-devices.net;DeviceId=GroupDevice;SharedAccessKey=0BxSVlK4q68QEjnJLpQ6Qwawo/HNGxLnmO/5Yy8flvk=

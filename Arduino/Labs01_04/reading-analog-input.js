@@ -4,14 +4,14 @@
 // Define the Johnny Five component
 var five = require("johnny-five");
 
+// Define the pin you will use to read the residual voltage 
+// coming from the photoresistor
+var ANALOGPIN = 0;
+
 // Create a Johnny Five board instance to represent your Arduino.
 // Board is simply an abstraction of the physical hardware, whether it is 
 // a Arduino, Raspberry Pi, Particle Photon, or other boards. 
 var board = new five.Board();
-
-// Define the pin you will use to read the residual voltage 
-// coming from the photoresistor
-var ANALOGPIN = 0;
 
 // The board.on() executes the anonymous function when the
 // board reports back that it is initialized and ready.

@@ -1,5 +1,9 @@
 {
   "name": "IoT-Labs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThingLabsIo/IoTLabs/tree/master/Arduino/Weather"
+  },
   "version": "0.1.1",
   "private":true,
   "description": "Sample app that connects a device to Azure using Node.js",

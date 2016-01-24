@@ -1,15 +1,15 @@
 {
-  "name": "Azure-IoT-Labs",
-  "version": "0.1.0",
+  "name": "IoT-Labs",
+  "version": "0.1.1",
   "private":true,
   "description": "Sample app that connects a device to Azure using Node.js",
   "main": "weather.js",
     "author": "YOUR NAME HERE",
   "license": "MIT",
   "dependencies": {
-    "azure-iot-device": "1.0.0-preview.6",
-    "johnny-five": "0.9.1",
-    "j5-sparkfun-weather-shield": "0.2.0",
-    "particle-io": "0.10.1"
+    "azure-iot-device": "latest",
+    "azure-iot-device-amqp": "latest",
+    "johnny-five": "latest",
+    "j5-sparkfun-weather-shield": "latest"
   }
 }

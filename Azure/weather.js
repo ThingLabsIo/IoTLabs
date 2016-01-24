@@ -1,10 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
+
 'use strict';
 // Define the objects you will be working with
 var five = require ("johnny-five");
 var Shield = require("j5-sparkfun-weather-shield")(five);
 var device = require('azure-iot-device');
+
+// Use factory function from AMQP-specific package
+// Other options include HTTP (azure-iot-device-http) and MQTT (azure-iot-device-mqtt)
+var clientFromConnectionString = require('azure-iot-device-amqp').clientFromConnectionString;
 
 /* 
 // PARTICLE PHOTON USERS
@@ -14,14 +19,13 @@ var Particle = require("particle-io");
 var token = 'YOUR PARTICLE ACCESS TOKEN HERE';
 */
 
-var sensorName = process.env.DEVICE_LOCATION || 'GIVE A UNIQUE NAME TO THE SENSOR';
 var location = process.env.DEVICE_LOCATION || 'GIVE A NAME TO THE LOCATION OF THE THING';
 var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC CONNECTION STRING HERE';
 
 // Create an Azure IoT client that will manage the connection to your IoT Hub
 // The client is created in the context of an Azure IoT device, which is why
 // you use a device-specific connection string.
-var client = device.Client.fromConnectionString(connectionString);
+var client = clientFromConnectionString(connectionString);
 var deviceId = device.ConnectionString.parse(connectionString).DeviceId;
 
 // Create a Johnny-Five board instance to represent your Particle Photon
@@ -40,7 +44,6 @@ var board = new five.Board({
   })
 });
 */
-
 // The board.on() executes the anonymous function when the 
 // board reports back that it is initialized and ready.
 board.on("ready", function() {
@@ -62,7 +65,6 @@ board.on("ready", function() {
     weather.on("data", function () {
       var payload = JSON.stringify({
         deviceId: deviceId,
-        sensorName: sensorName,
         location: location,
         // celsius & fahrenheit are averages taken from both sensors on the shield
         celsius: this.celsius,
@@ -88,6 +90,5 @@ board.on("ready", function() {
 function printResultFor(op) {
   return function printResult(err, res) {
     if (err) console.log(op + ' error: ' + err.toString());
-    if (res && (res.statusCode !== 204)) console.log(op + ' status: ' + res.statusCode + ' ' + res.statusMessage);
   };
 }

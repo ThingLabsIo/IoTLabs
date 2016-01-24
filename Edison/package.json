@@ -1,0 +1,14 @@
+{
+  "name": "IoT-Labs",
+  "version": "0.0.1",
+  "private":true,
+  "description": "Sample app that connects a device to Azure using Node.js",
+  "main": "hello.js",
+    "author": "YOUR NAME HERE",
+  "license": "MIT",
+  "dependencies": {
+    "johnny-five": "latest",
+    "edison-io": "latest",
+    "azure-iot-device": "latest"
+  }
+}

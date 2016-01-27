@@ -35,11 +35,11 @@ namespace IoTLightSensor
         enum AdcDevice { NONE, MCP3002, MCP3208, MCP3008 };
 
         // Use the device specific connection string here
-        private const string IOT_HUB_CONN_STRING = "HostName=iot-labs.azure-devices.net;DeviceId=ThingLabs00;SharedAccessKey=Zcpwj/z/ezloiepWV6I32Px3D1HxKSSP5x/ayL6NUb0=";
+        private const string IOT_HUB_CONN_STRING = "YOUR CONNECTION STRING HERE";
         // Use the name of your Azure IoT device here - this should be the same as the name in the connections string
-        private const string IOT_HUB_DEVICE = "ThingLabs00";
+        private const string IOT_HUB_DEVICE = "YOUR DEVICE NAME HERE";
         // Provide a short description of the location of the device, such as 'Home Office' or 'Garage'
-        private const string IOT_HUB_DEVICE_LOCATION = "Home Office";
+        private const string IOT_HUB_DEVICE_LOCATION = "YOUR LOCATION HERE";
 
         // Line 0 maps to physical pin 24 on the RPi2
         private const Int32 SPI_CHIP_SELECT_LINE = 0;
@@ -76,7 +76,7 @@ namespace IoTLightSensor
             InitAllAsync();
         }
 
-        private async void InitAllAsync()
+        private async Task InitAllAsync()
         {
             try
             {
@@ -101,9 +101,9 @@ namespace IoTLightSensor
             StatusText.Text = "Status: Running";
         }
 
-        private void MessageTimer_Tick(object state)
+        private async void MessageTimer_Tick(object state)
         {
-            SendMessageToIoTHubAsync(adcValue);
+            await SendMessageToIoTHubAsync(adcValue);
         }
 
         private async Task SendMessageToIoTHubAsync(int darkness)

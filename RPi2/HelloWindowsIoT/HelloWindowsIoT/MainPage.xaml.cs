@@ -49,15 +49,9 @@ namespace HelloWindowsIoT
             timer.Tick += Timer_Tick;
             // Initialize the GPIO bus
             InitGpioAsync();
-
-            // As long as the pin object is not null, proceed
-            if (pin != null)
-            {
-                timer.Start();
-            }
         }
 
-        private async void InitGpioAsync()
+        private async Task InitGpioAsync()
         {
             // Get the default GPIO controller
             var gpio = await GpioController.GetDefaultAsync();
@@ -69,16 +63,24 @@ namespace HelloWindowsIoT
                 GpioStatus.Text = "There is no GPIO controller on this device.";
                 return;
             }
+            
             // Open the GPIO channel
             pin = gpio.OpenPin(LED_PIN);
-            // Define the pin as an output pin
-            pin.SetDriveMode(GpioPinDriveMode.Output);
-            // Define the initial status as LOW (off)
-            pinValue = GpioPinValue.Low;
-            // Write the tate to the pin
-            pin.Write(pinValue);
-            // Update the on screen text to indicate that the GPIO is ready
-            GpioStatus.Text = "GPIO pin is initialized correctly.";
+                
+            // As long as the pin object is not null, proceed
+            if (pin != null)
+            {    
+                // Define the pin as an output pin
+                pin.SetDriveMode(GpioPinDriveMode.Output);
+                // Define the initial status as LOW (off)
+                pinValue = GpioPinValue.Low;
+                // Write the tate to the pin
+                pin.Write(pinValue);
+                // Update the on screen text to indicate that the GPIO is ready
+                GpioStatus.Text = "GPIO pin is initialized correctly.";
+            
+                timer.Start();
+            }
         }
 
         private void Timer_Tick(object sender, object e)

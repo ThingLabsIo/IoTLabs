@@ -80,8 +80,8 @@ namespace IoTLightSensor
         {
             try
             {
-                await InitGpioAsync();
-                await InitSpiAsync();
+                Task[] initTasks = { InitGpioAsync(), InitSpiAsync() };
+                await Task.WhenAll(initTasks);
             }
             catch (Exception ex)
             {

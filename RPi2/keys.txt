@@ -1,0 +1,16 @@
+
+http://ThingLabs.io/tr22
+
+HostName=iot-labs.azure-devices.net;DeviceId=TeamAwesome;SharedAccessKey=goYJAlcYy7jKBZJJtdC7XRZskOxdbft6QFeP+SSx5Us=
+
+HostName=iot-labs.azure-devices.net;DeviceId=bettertt;SharedAccessKey=3IlFQCVASVqE6SggPuV1xewkSIepGNlc2eqo6YhG+pQ=
+
+HostName=iot-labs.azure-devices.net;DeviceId=karlm;SharedAccessKey=UMMdj/6A4wXuYu/2MCFcw+OANr2D7LFm2C1Z0lvhtZg=
+
+HostName=iot-labs.azure-devices.net;DeviceId=kickassgang;SharedAccessKey=oZ2s/GMwm9aGGpVZKBzwsMQIEo2KL0c4SZaXiY+W84M=
+
+HostName=iot-labs.azure-devices.net;DeviceId=Napoleon;SharedAccessKey=h+dwmb0edXAjUpo0zEWvQ3CWJj4wxYHNMthcqddNT1M=
+
+HostName=iot-labs.azure-devices.net;DeviceId=tardis;SharedAccessKey=kZYaH8RatK0riMVocd6uR10HWl7QlROhwIr3eUfobxo=
+
+HostName=iot-labs.azure-devices.net;DeviceId=TeamBubbles;SharedAccessKey=ajRMZRcgsgrmfz45ob+gUHNndWTIceQz2QJlXGolMcY=

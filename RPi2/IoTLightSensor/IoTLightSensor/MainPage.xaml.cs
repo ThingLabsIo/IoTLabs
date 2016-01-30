@@ -47,8 +47,6 @@ namespace IoTLightSensor
 
         // 01101000 channel configuration data for the MCP3002
         private const byte MCP3002_CONFIG = 0x68;
-        // 00000110 channel configuration data for the MCP3208
-        private const byte MCP3208_CONFIG = 0x06;
         // 00001000 channel configuration data for the MCP3008
         private const byte MCP3008_CONFIG = 0x08;
 
@@ -60,7 +58,7 @@ namespace IoTLightSensor
         private DeviceClient deviceClient;
         private GpioPin redLedPin;
         private SpiDevice spiAdc;
-        private int adcResolution;
+        private int adcResolution = 1024; // Both ADCs in this example are 10-bit (0-1023 range)
         private int adcValue;
 
         private Timer readSensorTimer;
@@ -150,21 +148,7 @@ namespace IoTLightSensor
         {
             SolidColorBrush fillColor = grayFill;
 
-            // Turn on LED if potentiometer is rotated more than halfway
-            switch (ADC_DEVICE)
-            {
-                case AdcDevice.MCP3208:
-                    adcResolution = 4096;
-                    break;
-                case AdcDevice.MCP3008:
-                    adcResolution = 1024;
-                    break;
-                case AdcDevice.MCP3002:
-                    adcResolution = 1024;
-                    break;
-            }
-
-            if (adcValue > adcResolution * 0.5)
+            if (adcValue > adcResolution * 0.66)
             {
                 redLedPin.Write(GpioPinValue.High);
                 fillColor = redFill;
@@ -195,9 +179,6 @@ namespace IoTLightSensor
                     break;
                 case AdcDevice.MCP3008:
                     writeBuffer[0] = MCP3008_CONFIG;
-                    break;
-                case AdcDevice.MCP3208:
-                    writeBuffer[0] = MCP3208_CONFIG;
                     break;
             }
 
@@ -233,11 +214,6 @@ namespace IoTLightSensor
                     result <<= 8;
                     result += data[2];
                     break;
-                case AdcDevice.MCP3208:
-                    result = data[1] & 0x0F;
-                    result <<= 8;
-                    result += data[2];
-                    break;
             }
             return result;
         }
@@ -247,8 +223,9 @@ namespace IoTLightSensor
             try
             {
                 var settings = new SpiConnectionSettings(SPI_CHIP_SELECT_LINE);
-                // 3.6MHz is the rated speed of the MCP3008 at 5v
-                settings.ClockFrequency = 3600000;
+                // 3.2MHz is the rated speed of the MCP3002 at 5v (1.2MHz @ 2.7V)
+                // 3.6MHz is the rated speed of the MCP3008 at 5v (1.35MHz @ 2.7V)
+                settings.ClockFrequency = 1000000; // Set the clock frequency at or slightly below the specified rate speed
                 // The ADC expects idle-low clock polarity so we use Mode0
                 settings.Mode = SpiMode.Mode0;
                 // Get a selector string that will return all SPI controllers on the system

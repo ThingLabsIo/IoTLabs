@@ -29,10 +29,10 @@ namespace IoTLightSensor
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        /* Important! Change this to either AdcDevice.MCP3002, AdcDevice.MCP3208 or AdcDevice.MCP3008 depending on which ADC you chose     */
-        private AdcDevice ADC_DEVICE = AdcDevice.MCP3002;
+        /* IMPORTANT! Change this to either AdcDevice.MCP3002 or AdcDevice.MCP3008 depending on which ADC you have     */
+        private AdcDevice ADC_DEVICE = AdcDevice.MCP3008;
 
-        enum AdcDevice { NONE, MCP3002, MCP3208, MCP3008 };
+        enum AdcDevice { NONE, MCP3002, MCP3208 };
 
         // Use the device specific connection string here
         private const string IOT_HUB_CONN_STRING = "YOUR CONNECTION STRING HERE";

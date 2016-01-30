@@ -63,6 +63,7 @@ namespace IoTLightSensor
 
         private Timer readSensorTimer;
         private Timer sendMessageTimer;
+        
         public MainPage()
         {
             this.InitializeComponent();

@@ -1,0 +1,17 @@
+{
+  "name": "IoT-Labs-Edison",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThingLabsIo/IoTLabs"
+  },
+  "version": "0.0.1",
+  "private":true,
+  "description": "Hellow World (blink an LED) using Node.js",
+  "main": "blinky.js",
+    "author": "YOUR NAME HERE",
+  "license": "MIT",
+  "dependencies": {
+    "johnny-five": "latest",
+    "edison-io": "latest"
+  }
+}

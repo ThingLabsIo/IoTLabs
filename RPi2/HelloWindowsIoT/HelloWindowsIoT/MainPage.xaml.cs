@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.Gpio;
+using System.Threading;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -63,13 +65,13 @@ namespace HelloWindowsIoT
                 GpioStatus.Text = "There is no GPIO controller on this device.";
                 return;
             }
-            
+
             // Open the GPIO channel
             pin = gpio.OpenPin(LED_PIN);
-                
+
             // As long as the pin object is not null, proceed
             if (pin != null)
-            {    
+            {
                 // Define the pin as an output pin
                 pin.SetDriveMode(GpioPinDriveMode.Output);
                 // Define the initial status as LOW (off)
@@ -78,7 +80,7 @@ namespace HelloWindowsIoT
                 pin.Write(pinValue);
                 // Update the on screen text to indicate that the GPIO is ready
                 GpioStatus.Text = "GPIO pin is initialized correctly.";
-            
+
                 timer.Start();
             }
         }

@@ -29,26 +29,27 @@ namespace IoTLightSensor
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        /* IMPORTANT! Change this to either AdcDevice.MCP3002 or AdcDevice.MCP3008 depending on which ADC you have     */
-        private AdcDevice ADC_DEVICE = AdcDevice.MCP3008;
+        /* IMPORTANT! Change this to either AdcDevice.MCP3002 or AdcDevice.MCP3208 depending on which ADC you have     */ 
+        private AdcDevice ADC_DEVICE = AdcDevice.MCP3002;
 
         enum AdcDevice { NONE, MCP3002, MCP3208 };
-
+        
         // Use the device specific connection string here
-        private const string IOT_HUB_CONN_STRING = "YOUR CONNECTION STRING HERE";
+        private const string IOT_HUB_CONN_STRING = "YOUR DEVICE SPECIFIC CONNECTION STRING GOES HERE";
         // Use the name of your Azure IoT device here - this should be the same as the name in the connections string
-        private const string IOT_HUB_DEVICE = "YOUR DEVICE NAME HERE";
+        private const string IOT_HUB_DEVICE = "YOUR DEVICE NAME GOES HERE";
         // Provide a short description of the location of the device, such as 'Home Office' or 'Garage'
-        private const string IOT_HUB_DEVICE_LOCATION = "YOUR LOCATION HERE";
-
+        private const string IOT_HUB_DEVICE_LOCATION = "YOUR DEVICE LOCATION GOES HERE";
+        
         // Line 0 maps to physical pin 24 on the RPi2
-        private const Int32 SPI_CHIP_SELECT_LINE = 0;
+        private const Int32 SPI_CHIP_SELECT_LINE = 0; 
         private const string SPI_CONTROLLER_NAME = "SPI0";
 
         // 01101000 channel configuration data for the MCP3002
         private const byte MCP3002_CONFIG = 0x68;
-        // 00001000 channel configuration data for the MCP3008
-        private const byte MCP3008_CONFIG = 0x08;
+        // 00000110 channel configuration data for the MCP3208 
+        private const byte MCP3208_CONFIG = 0x06; 
+
 
         private const int RED_LED_PIN = 12;
 
@@ -58,9 +59,9 @@ namespace IoTLightSensor
         private DeviceClient deviceClient;
         private GpioPin redLedPin;
         private SpiDevice spiAdc;
-        private int adcResolution = 1024; // Both ADCs in this example are 10-bit (0-1023 range)
+        private int adcResolution;
         private int adcValue;
-
+        
         private Timer readSensorTimer;
         private Timer sendMessageTimer;
         
@@ -95,7 +96,7 @@ namespace IoTLightSensor
             deviceClient = DeviceClient.CreateFromConnectionString(IOT_HUB_CONN_STRING);
 
             // Send messages to Azure IoT Hub every one-second
-            sendMessageTimer = new Timer(this.MessageTimer_Tick, null, 0, 2000);
+            sendMessageTimer = new Timer(this.MessageTimer_Tick, null, 0, 1000);
 
             StatusText.Text = "Status: Running";
         }
@@ -149,7 +150,18 @@ namespace IoTLightSensor
         {
             SolidColorBrush fillColor = grayFill;
 
-            if (adcValue > adcResolution * 0.66)
+            switch (ADC_DEVICE) 
+            {
+                case AdcDevice.MCP3002: 
+                    adcResolution = 1024; 
+                    break;
+                case AdcDevice.MCP3208: 
+                    adcResolution = 4096; 
+                    break;  
+            } 
+
+
+            if (adcValue > adcResolution * 0.5)
             {
                 redLedPin.Write(GpioPinValue.High);
                 fillColor = redFill;
@@ -178,8 +190,8 @@ namespace IoTLightSensor
                 case AdcDevice.MCP3002:
                     writeBuffer[0] = MCP3002_CONFIG;
                     break;
-                case AdcDevice.MCP3008:
-                    writeBuffer[0] = MCP3008_CONFIG;
+                case AdcDevice.MCP3208:
+                    writeBuffer[0] = MCP3208_CONFIG;
                     break;
             }
 
@@ -210,11 +222,12 @@ namespace IoTLightSensor
                     result <<= 8;
                     result += data[1];
                     break;
-                case AdcDevice.MCP3008:
-                    result = data[1] & 0x03;
-                    result <<= 8;
-                    result += data[2];
-                    break;
+                case AdcDevice.MCP3208:
+                    result = data[1] & 0x0F; 
+                    result <<= 8; 
+                    result += data[2]; 
+                    break; 
+
             }
             return result;
         }
@@ -225,10 +238,11 @@ namespace IoTLightSensor
             {
                 var settings = new SpiConnectionSettings(SPI_CHIP_SELECT_LINE);
                 // 3.2MHz is the rated speed of the MCP3002 at 5v (1.2MHz @ 2.7V)
-                // 3.6MHz is the rated speed of the MCP3008 at 5v (1.35MHz @ 2.7V)
-                settings.ClockFrequency = 1000000; // Set the clock frequency at or slightly below the specified rate speed
+                // 2.0MHz is the rated speed of the MCP3208 at 5v (1.0MHz @ 2.7V)
+                // Set the clock frequency at or slightly below the specified rate speed
+                settings.ClockFrequency = 800000;
                 // The ADC expects idle-low clock polarity so we use Mode0
-                settings.Mode = SpiMode.Mode0;
+                settings.Mode = SpiMode.Mode0; 
                 // Get a selector string that will return all SPI controllers on the system
                 string spiAqs = SpiDevice.GetDeviceSelector(SPI_CONTROLLER_NAME);
                 // Find the SPI bus controller devices with our selector string 

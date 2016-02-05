@@ -1,20 +1,19 @@
 {
   "name": "IoT-Labs",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ThingLabsIo/IoTLabs/tree/master/Photon/Weather"
-  },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private":true,
   "description": "Sample app that connects a device to Azure using Node.js",
   "main": "weather.js",
     "author": "YOUR NAME HERE",
   "license": "MIT",
   "dependencies": {
-    "azure-iot-device": "latest",
-    "azure-iot-device-amqp": "latest",
-    "johnny-five": "latest",
-    "j5-sparkfun-weather-shield": "latest",
-    "particle-io": "latest"
+    "azure-iot-device": "1.0.0",
+    "azure-iot-device-amqp": "1.0.0",
+    "azure-iot-device-amqp-ws": "1.0.0",
+    "azure-iot-device-http": "1.0.0",
+    "azure-iot-device-mqtt": "1.0.0",
+    "johnny-five": "0.9.19",
+    "j5-sparkfun-weather-shield": "0.2.0",
+    "particle-io": "0.12.0"
   }
 }

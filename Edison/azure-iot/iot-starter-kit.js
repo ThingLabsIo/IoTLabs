@@ -27,8 +27,8 @@
 
 'use strict';
 // Define the objects you will be working with
-var five = require("johnny-five");
-var Edison = require("edison-io");
+var five = require('johnny-five');
+var Edison = require('edison-io');
 var device = require('azure-iot-device');
 
 // Define the client object that communicates with Azure IoT Hubs
@@ -59,65 +59,15 @@ var deviceId = device.ConnectionString.parse(connectionString).DeviceId;
 var location = process.env.DEVICE_LOCATION || 'GIVE A NAME TO THE LOCATION OF THE THING';
 
 // Define the sensors you will use
-var thermometer, lcd, led;
+var thermometer, lcd, led, button;
 
 // Define some variable for holding sensor values
-var c, f, r, g, b = 0;
+var tempC, tempF, r, g, b = 0;
 
 // Define the board, which is an abstraction of the Intel Edison
 var board = new five.Board({
   io: new Edison()
 });
-
-// Open the connection to Azure IoT Hub
-// When the connection respondes (either open or error)
-// the anonymous function is executed
-var connectCallback = function (err) {
-    console.log("Azure IoT connection open...");
-    
-    if(err) {
-        // If there is a connection error, show it
-        console.err('Could not connect: ' + err.message);
-    } else {
-        console.log('Client connected');
-        
-        // Create a message and send it to the IoT Hub every second
-        var sendInterval = setInterval(function () {
-            sendMessage('temperature', c);
-        }, 2000);
-        
-        client.on('message', function (msg) {
-            console.log('Id: ' + msg.messageId + ' Body: ' + msg.data);
-            
-            var body = msg.data.split(":");
-            var indexOfLed = body.indexOf("led");
-            
-            if(indexOfLed >= 0) {
-                if(body[indexOfLed+1] === "on"){
-                    led.on();
-                } else if(body[indexOfLed+1] === "off"){
-                    led.off();
-                }
-            }
-            
-            client.complete(msg, printResultFor('completed'));
-            // reject and abandon follow the same pattern.
-            // /!\ reject and abandon are not available with MQTT
-        });
-            
-        // If the client gets an error, handle it
-        client.on('error', function (err) {
-            console.error(err.message);
-        });
-            
-        // If the client gets disconnected, cleanup and reconnect
-        client.on('disconnect', function () {
-            clearInterval(sendInterval);
-            client.removeAllListeners();
-            client.connect(connectCallback);
-        });
-    }
-}
 
 function sendMessage(src, val){
     // Define the message body
@@ -132,7 +82,7 @@ function sendMessage(src, val){
     var message = new Message(payload);
     
     // For debugging purposes, write out the message payload to the console
-    console.log("Sending message: " + message.getData());
+    console.log('Sending message: ' + message.getData());
     
     // Send the message to Azure IoT Hub
     client.sendEvent(message, printResultFor('send'));
@@ -146,29 +96,114 @@ function printResultFor(op) {
   };
 }
 
-// [Linear Interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)
-function linear(start, end, step, steps) {
-  return (end - start) * step / steps + start;
+// *********************************************
+// Open the connection to Azure IoT Hub.
+// When the connection respondes (either open or 
+// error) the anonymous function is executed.
+// *********************************************
+var connectCallback = function (err) {
+    console.log('Open Azure IoT connection...');
+    
+    
+    // *********************************************
+    // If there is a connection error, display it 
+    // in the console.
+    // *********************************************
+    if(err) {
+        console.error('...could not connect: ' + err);
+        
+        
+    // *********************************************
+    // If there is no error, send and receive
+    // messages, and process completed messages.
+    // *********************************************
+    } else {
+        console.log('...client connected');
+        
+        
+        // *********************************************
+        // Create a message and send it to the IoT Hub
+        // every second
+        // *********************************************
+        var sendInterval = setInterval(function () {
+            sendMessage('temperature', tempC);
+        }, 2000);
+        
+        
+        
+        // *********************************************
+        // Listen for incoming messages
+        // *********************************************
+        client.on('message', function (msg) {
+            console.log('*********************************************');
+            console.log('**** Message Received - Id: ' + msg.messageId + ' Body: ' + msg.data);
+            console.log('*********************************************');
+            
+            // Split the message on a delimiter.
+            var body = msg.data.split(':');
+            
+            // Look for the 'ledl' indicator.
+            var indexOfLed = body.indexOf('led');
+            
+            // If 'led' is found, look at the next node in 
+            // the message body, and turn the led on or off 
+            // accordingly.
+            if(indexOfLed >= 0) {
+                if(body[indexOfLed+1] === 'on') led.on();
+                else if(body[indexOfLed+1] === 'off') led.off();
+            }
+
+            // *********************************************
+            // Process completed messages and remove them 
+            // from the message queue.
+            // *********************************************
+            client.complete(msg, printResultFor('completed'));
+            // reject and abandon follow the same pattern.
+            // /!\ reject and abandon are not available with MQTT
+        });
+            
+            
+        // *********************************************
+        // If the client gets an error, dsiplay it in
+        // the console.
+        // *********************************************
+        client.on('error', function (err) {
+            console.error(err.message);
+        });
+            
+            
+        // *********************************************
+        // If the client gets disconnected, cleanup and
+        // reconnect.
+        // *********************************************
+        client.on('disconnect', function () {
+            clearInterval(sendInterval);
+            client.removeAllListeners();
+            client.connect(connectCallback);
+        });
+    }
 }
 
-// The board.on() executes the anonymous function when the 
-// board reports back that it is initialized and ready.
-board.on("ready", function() {
-    console.log("Board connected...");
-    
-    client.open(connectCallback);
+
+// *********************************************
+// The board.on() executes the anonymous
+// function when the 'board' reports back that
+// it is initialized and ready.
+// *********************************************
+board.on('ready', function() {
+    console.log('Board connected...');
     
     // Plug the Temperature sensor module
     // into the Grove Shield's A0 jack
     thermometer = new five.Thermometer({
-        pin: "A0",
-        controller: "GROVE"
+        pin: 'A0',
+        controller: 'GROVE'
     });
     
     // Plug the LCD module into any of the
     // Grove Shield's I2C jacks.
     lcd = new five.LCD({
-        controller: "JHD1313M1"
+        controller: 'JHD1313M1'
     });
     
     // Plug the LED module into the
@@ -177,25 +212,15 @@ board.on("ready", function() {
     
     // Plug the Button module into the
     // Grove Shield's D4 jack.
-    var button = new five.Button(4);
+    button = new five.Button(4);
     
-    // The following will turn the Led
-    // on when the button is pressed.
-    button.on("press", function() {
-        led.on();
-        sendMessage("led", "on");
-    });
     
-    // The following will turn the Led
-    // off when the button is released.
-    button.on("release", function() {
-        led.off();
-        sendMessage("led", "off");
-    });
-    
-    // The thermometer object will invoke a callback everytime it reads data
-    // as fast as every 25ms or whatever the 'freq' argument is set to
-    thermometer.on("data", function() {
+    // *********************************************
+    // The thermometer object will invoke a callback
+    // everytime it reads data as fast as every 25ms
+    // or whatever the 'freq' argument is set to.
+    // *********************************************
+    thermometer.on('data', function() {
         /* 
         * The LCD's background will change color according to the temperature.
         * Hot -> Warm: Red -> Yellow
@@ -203,15 +228,65 @@ board.on("ready", function() {
         * Cool -> Cold: Blue -> Violet
         */
     
-        f = this.fahrenheit;
-        c = this.celsius;
+        // Set the state of the variables based on the 
+        // value read from the thermometer
+        // 'this' scope is the thermometer
+        tempC = this.celsius;
+        tempF = this.fahrenheit;
         
-        var cRounded = Math.round(c);
+        // Use a simple linear function to determine
+        // the RGB color to paint the LCD screen.
+        r = linear(0x00, 0xFF, tempC, 37);
+        g = linear(0x00, 0x00, tempC, 37);
+        b = linear(0xFF, 0x00, tempC, 37);
         
-        r = linear(0x00, 0xFF, cRounded, 40);
-        g = linear(0x00, 0x00, cRounded, 40);
-        b = linear(0xFF, 0x00, cRounded, 40);
-                
-        lcd.bgColor(r, g, b).cursor(0, 0).print("Fahrenheit: " + Math.round(f));
+        // Paint the LCD and print the temperture
+        // (rounded up to the nearest whole integer)
+        lcd.bgColor(r, g, b).cursor(0, 0).print('Fahrenheit: ' + Math.ceil(tempF));
     });
+    
+    
+    
+    // *********************************************
+    // The button.on('press') invokes the anonymous 
+    // callback when the button is pressed.
+    // *********************************************
+    button.on('press', function() {
+        led.on();
+        console.log('*********************************************');
+        sendMessage('led', 'on');
+        console.log('*********************************************');
+    });
+    
+    
+    
+    // *********************************************
+    // The button.on('release') invokes the
+    // anonymous callback when the button is
+    // released.
+    // *********************************************
+    button.on('release', function() {
+        led.off();
+        console.log('*********************************************');
+        sendMessage('led', 'off');
+        console.log('*********************************************');
+    });
+    
+    
+    // *********************************************
+    // Open the connection to Azure IoT Hubs and
+    // begin sending messages.
+    // *********************************************
+    client.open(connectCallback);
 });
+
+
+
+// *********************************************
+// Helper method for painting the LCD.
+// Linear Interpolation
+// (https://en.wikipedia.org/wiki/Linear_interpolation)
+// *********************************************
+function linear(start, end, step, steps) {
+  return (end - start) * step / steps + start;
+}

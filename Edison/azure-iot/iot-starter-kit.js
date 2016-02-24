@@ -69,6 +69,15 @@ var board = new five.Board({
   io: new Edison()
 });
 
+
+
+// *********************************************
+// Send a messae to Azure IoT Hub.
+// Always send the same message format (to 
+// ensure the StreamAnalytics job doesn't fail)
+// includng deviceId, location and the sensor 
+// type/value combination.
+// *********************************************
 function sendMessage(src, val){
     // Define the message body
     var payload = JSON.stringify({
@@ -87,14 +96,20 @@ function sendMessage(src, val){
     // Send the message to Azure IoT Hub
     client.sendEvent(message, printResultFor('send'));
 }
-    
+
+
+
+// *********************************************
 // Helper function to print results in the console
+// *********************************************
 function printResultFor(op) {
   return function printResult(err, res) {
     if (err) console.log(op + ' error: ' + err.toString());
     if (res) console.log(op + ' status: ' + res.constructor.name);
   };
 }
+
+
 
 // *********************************************
 // Open the connection to Azure IoT Hub.
@@ -105,6 +120,7 @@ var connectCallback = function (err) {
     console.log('Open Azure IoT connection...');
     
     
+    
     // *********************************************
     // If there is a connection error, display it 
     // in the console.
@@ -113,12 +129,14 @@ var connectCallback = function (err) {
         console.error('...could not connect: ' + err);
         
         
+        
     // *********************************************
     // If there is no error, send and receive
     // messages, and process completed messages.
     // *********************************************
     } else {
         console.log('...client connected');
+        
         
         
         // *********************************************
@@ -153,6 +171,8 @@ var connectCallback = function (err) {
                 else if(body[indexOfLed+1] === 'off') led.off();
             }
 
+
+
             // *********************************************
             // Process completed messages and remove them 
             // from the message queue.
@@ -163,6 +183,7 @@ var connectCallback = function (err) {
         });
             
             
+            
         // *********************************************
         // If the client gets an error, dsiplay it in
         // the console.
@@ -170,6 +191,7 @@ var connectCallback = function (err) {
         client.on('error', function (err) {
             console.error(err.message);
         });
+            
             
             
         // *********************************************
@@ -183,6 +205,7 @@ var connectCallback = function (err) {
         });
     }
 }
+
 
 
 // *********************************************
@@ -215,19 +238,13 @@ board.on('ready', function() {
     button = new five.Button(4);
     
     
+    
     // *********************************************
     // The thermometer object will invoke a callback
     // everytime it reads data as fast as every 25ms
     // or whatever the 'freq' argument is set to.
     // *********************************************
     thermometer.on('data', function() {
-        /* 
-        * The LCD's background will change color according to the temperature.
-        * Hot -> Warm: Red -> Yellow
-        * Moderate: Green
-        * Cool -> Cold: Blue -> Violet
-        */
-    
         // Set the state of the variables based on the 
         // value read from the thermometer
         // 'this' scope is the thermometer
@@ -236,9 +253,15 @@ board.on('ready', function() {
         
         // Use a simple linear function to determine
         // the RGB color to paint the LCD screen.
-        r = linear(0x00, 0xFF, tempC, 37);
-        g = linear(0x00, 0x00, tempC, 37);
-        b = linear(0xFF, 0x00, tempC, 37);
+        // The LCD's background will change color
+        // according to the temperature.
+        // Hot -> Moderate -> Cold
+        // 100°F ->  66°F  -> 32°F
+        // 38°C  ->  19°C  -> 0°C
+        // Red ->  Violet  -> Blue
+        r = linear(0x00, 0xFF, tempC, 38);
+        g = linear(0x00, 0x00, tempC, 38);
+        b = linear(0xFF, 0x00, tempC, 38);
         
         // Paint the LCD and print the temperture
         // (rounded up to the nearest whole integer)
@@ -271,6 +294,7 @@ board.on('ready', function() {
         sendMessage('led', 'off');
         console.log('*********************************************');
     });
+    
     
     
     // *********************************************

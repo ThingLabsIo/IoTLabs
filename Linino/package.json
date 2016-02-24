@@ -1,0 +1,21 @@
+{
+  "name": "thinglabs-iot-sample",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThingLabsIo/IoTLabs/tree/master/Linino"
+  },
+  "version": "0.1.2",
+  "private":true,
+  "description": "Sample app that connects a device to Azure using Node.js",
+  "main": "temp.js",
+    "author": "Doug Seven",
+  "license": "MIT",
+  "dependencies": {
+    "azure-iot-device": "1.0.1",
+    "azure-iot-device-amqp": "1.0.1",
+    "azure-iot-device-http": "1.0.1",
+    "azure-iot-device-mqtt": "1.0.1",
+    "johnny-five": "0.9.24",
+    "edison-io": "0.9.1"
+  }
+}

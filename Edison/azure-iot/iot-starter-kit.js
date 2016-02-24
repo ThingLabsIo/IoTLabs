@@ -95,6 +95,8 @@ function sendMessage(src, val){
     
     // Send the message to Azure IoT Hub
     client.sendEvent(message, printResultFor('send'));
+    
+    console.log('- - - -');
 }
 
 
@@ -141,7 +143,7 @@ var connectCallback = function (err) {
         
         // *********************************************
         // Create a message and send it to the IoT Hub
-        // every second
+        // every two-seconds
         // *********************************************
         var sendInterval = setInterval(function () {
             sendMessage('temperature', tempC);
@@ -256,12 +258,12 @@ board.on('ready', function() {
         // The LCD's background will change color
         // according to the temperature.
         // Hot -> Moderate -> Cold
-        // 100°F ->  66°F  -> 32°F
-        // 38°C  ->  19°C  -> 0°C
+        // 122°F ->  77°F  -> 32°F
+        // 50°C  ->  25°C  -> 0°C
         // Red ->  Violet  -> Blue
-        r = linear(0x00, 0xFF, tempC, 38);
-        g = linear(0x00, 0x00, tempC, 38);
-        b = linear(0xFF, 0x00, tempC, 38);
+        r = linear(0x00, 0xFF, tempC, 50);
+        g = linear(0x00, 0x00, tempC, 50);
+        b = linear(0xFF, 0x00, tempC, 50);
         
         // Paint the LCD and print the temperture
         // (rounded up to the nearest whole integer)

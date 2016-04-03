@@ -3,11 +3,11 @@
 
 'use strict';
 
-// var Amqp = require('azure-iot-device-amqp').Amqp;
+var Protocol = require('azure-iot-device-amqp').Amqp;
 // Uncomment one of these transports and then change it in fromConnectionString to test other transports
-// var AmqpWs = require('azure-iot-device-amqp-ws').AmqpWs;
-var Http = require('azure-iot-device-http').Http;
-// var Mqtt = require('azure-iot-device-mqtt').Mqtt;
+// var Protocol = require('azure-iot-device-amqp-ws').AmqpWs;
+// var Protocol = require('azure-iot-device-http').Http;
+// var Protocol = require('azure-iot-device-mqtt').Mqtt;
 var Client = require('azure-iot-device').Client;
 var Message = require('azure-iot-device').Message;
 
@@ -16,11 +16,11 @@ var Message = require('azure-iot-device').Message;
 var connectionString = process.env.IOTHUB_DEVICE_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC CONNECTION STRING HERE';
 
 // fromConnectionString must specify a transport constructor, coming from any transport package.
-var client = Client.fromConnectionString(connectionString, Http);
+var client = Client.fromConnectionString(connectionString, Protocol);
 
 var connectCallback = function (err) {
   if (err) {
-    console.error('Could not connect: ' + err);
+    console.error('Could not connect: ' + err.message);
   } else {
     console.log('Client connected');
     client.on('message', function (msg) {

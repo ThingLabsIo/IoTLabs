@@ -59,10 +59,10 @@ var deviceId = device.ConnectionString.parse(connectionString).DeviceId;
 var location = process.env.DEVICE_LOCATION || 'GIVE A NAME TO THE LOCATION OF THE THING';
 
 // Define the sensors you will use
-var thermometer, lcd, led, button;
+var th02, lcd, led, button;
 
 // Define some variable for holding sensor values
-var tempC, tempF, r, g, b = 0;
+var tempC, tempF, humidity, r, g, b = 0;
 
 // Define the board, which is an abstraction of the Intel Edison
 var board = new five.Board({
@@ -219,10 +219,9 @@ board.on('ready', function() {
     console.log('Board connected...');
     
     // Plug the Temperature sensor module
-    // into the Grove Shield's A0 jack
-    thermometer = new five.Thermometer({
-        pin: 'A0',
-        controller: 'GROVE'
+    // into the Grove Shield's I2C jack
+    th02 = new five.Multi({
+        controller: "TH02"
     });
     
     // Plug the LCD module into any of the
@@ -233,7 +232,7 @@ board.on('ready', function() {
     
     // Plug the LED module into the
     // Grove Shield's D6 jack.
-    led = new five.Led(6);
+    led = new five.Led(13);
     
     // Plug the Button module into the
     // Grove Shield's D4 jack.
@@ -246,12 +245,13 @@ board.on('ready', function() {
     // everytime it reads data as fast as every 25ms
     // or whatever the 'freq' argument is set to.
     // *********************************************
-    thermometer.on('data', function() {
+    th02.on('data', function() {
         // Set the state of the variables based on the 
         // value read from the thermometer
         // 'this' scope is the thermometer
-        tempC = this.celsius;
-        tempF = this.fahrenheit;
+        tempC = this.temperature.celsius;
+        tempF = this.temperature.fahrenheit;
+        humidity = this. hygrometer.relativeHumidity;
         
         // Use a simple linear function to determine
         // the RGB color to paint the LCD screen.
@@ -267,7 +267,7 @@ board.on('ready', function() {
         
         // Paint the LCD and print the temperture
         // (rounded up to the nearest whole integer)
-        lcd.bgColor(r, g, b).cursor(0, 0).print('Fahrenheit: ' + Math.ceil(tempF));
+        lcd.bgColor(r, g, b).cursor(0, 0).print('Fahrenheit: ' + Math.ceil(tempF) +'\nHumidity: ' + humidity);
     });
     
     
